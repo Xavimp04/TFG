@@ -96,10 +96,213 @@ Metodología en incidentes:
   - Sistema de archivos: en `/var/lib/docker` del host  
 - **Análisis:** Revisar capas del contenedor en busca de archivos modificados o maliciosos.
 
-## 3. VMware ESXi
 
-Logs principales en `/var/log` del hipervisor:
+## 3. VMware ESXi (Logs y Adquisición)
 
-- **VMkernel.log:** Actividad del kernel virtual y errores.  
-- **Shell.log:** Comandos ejecutados (auditoría).  
-- **Auth.log:** Autenticación en el hipervisor.
+### Logs Principales
+
+Ubicados en `/var/log` del hipervisor:
+
+- **VMkernel.log**  
+  Eventos del kernel virtual, errores de hardware virtual y fallos de I/O.
+
+- **Shell.log**  
+  Auditoría de comandos ejecutados en el hipervisor.
+
+- **Auth.log**  
+  Eventos de autenticación y acceso administrativo.
+
+### Adquisición Forense
+
+#### Memoria RAM
+
+- **Requisito:**  
+  Snapshot de la máquina virtual **incluyendo memoria**.
+
+- **Archivos a extraer:**
+  - `.vmem` → Contenido completo de la RAM
+  - `.vmsn` → Metadatos y offsets de memoria
+
+- **Nota Forense:**  
+  Ambos archivos son necesarios para un análisis coherente de memoria.
+
+#### Disco
+
+- **Estado de la VM:**  
+  Máquina **apagada**.
+
+- **Archivo relevante:**
+  - `-flat.vmdk` → Contiene los datos reales del disco
+
+- **Importante:**  
+  El archivo `.vmdk` pequeño es solo un **descriptor**, no contiene datos útiles.
+
+## 4. Microsoft Hyper-V
+
+### Adquisición de Memoria
+
+- **Método:**  
+  Crear **Checkpoint en modo Estándar** (no Production).
+
+- **Archivo forense:**
+  - `.vmrs` → Contenido de la memoria RAM de la VM
+
+### Adquisición de Disco
+
+- **Método recomendado:**  
+  Exportación de la máquina virtual.
+
+- **Formato resultante:**
+  - `.vhdx`
+
+
+# E. Análisis Forense de Sistemas de Archivos (EXT, XFS, BTRFS)
+
+El análisis de la capa del sistema de archivos permite recuperar datos eliminados y establecer cronologías precisas.
+
+## 1. Cronología Forense: Marcas de Tiempo (Timestamps)
+
+La interpretación correcta de los tiempos es vital para reconstruir eventos.
+
+| Marca | Nombre | Significado | Nota Importante |
+|------|-------|------------|----------------|
+| M time | Modification | Modificación del contenido del archivo | Se altera al editar el archivo |
+| A time | Access | Último acceso o lectura | En Linux moderno (`relatime`), no se actualiza siempre para ahorrar rendimiento |
+| C time | Change | Cambio en metadatos (permisos, dueño) | Se altera con `chmod`, `chown` |
+| CR time / O Time | Creation / Birth | Fecha de creación del archivo | Disponible en EXT4, XFS y BTRFS. No existe en EXT2/3 |
+
+## 2. Detección de "Timestomping" (Manipulación de Fechas)
+
+Los atacantes usan `touch` para modificar fechas y ocultar malware.
+
+### Indicadores comunes
+
+- **Precisión de nanosegundos**  
+  Si el timestamp muestra ceros exactos (ej. `.000000000`), indica manipulación manual.
+
+- **Inconsistencias temporales**  
+  Si el *Modify Time* es anterior al *Creation Time* (en Linux), es una anomalía sospechosa.
+
+## 3. Herramientas y Características por Sistema de Archivos
+
+| Sistema | Características Clave | Herramientas Forenses / Recuperación |
+|-------|----------------------|--------------------------------------|
+| EXT3 / EXT4 | Journaling (protege integridad). EXT4 usa *Extents* y timestamps precisos | TSK (`fls`, `icat`, `istat`, `jls`), `debugfs`, `ext4magic` (recupera usando el journal) |
+| BTRFS | Copy on Write (COW), Snapshots y Subvolúmenes | `btrfs-restore`, `btrfs subvol list`. TSK tiene soporte limitado |
+| XFS | Alto rendimiento, 64-bit | `xfs_db` (depuración), `xfs_repair`. TSK estándar no lo soporta (requiere fork) |
+
+## 4. Recuperación de Datos (File Carving)
+
+Cuando el sistema de archivos está dañado o se busca en espacio no asignado:
+
+- **PhotoRec**  
+  Ignora el sistema de archivos y busca *firmas* (headers/footers) de archivos conocidos como JPG, PDF u Office.
+
+
+# F. Mecanismos de Persistencia y Ejecución
+
+Rutas y técnicas utilizadas por atacantes para mantener el acceso tras un reinicio.
+
+## 1. Servicios del Sistema
+
+| Sistema | Ubicación de Archivos | Vector de Ataque |
+|-------|----------------------|------------------|
+| systemd | `/etc/systemd/system/` | Archivos `.service` maliciosos. Directivas clave: `ExecStart` (comando), `Restart=always` (revive proceso) |
+| SysV Init | `/etc/init.d/` | Inyección de scripts en bloques `start`. Habilitados mediante enlaces simbólicos en runlevels |
+
+## 2. Tareas Programadas
+
+### Cron Jobs
+
+- **Ubicación**
+  - `/var/spool/cron/crontabs/` (usuario)
+  - `/etc/cron.d/` (sistema)
+
+- **Detección**
+  - Buscar patrones `* * * * *` (ejecución cada minuto)
+
+### Systemd Timers
+
+- Archivos `.timer` que controlan servicios
+- **Riesgo**
+  - `Persistent=true` ejecuta tareas pendientes tras reiniciar
+  - Un timer puede activar un servicio con nombre diferente (ofuscación)
+
+## 3. Persistencia SSH (Claves Autorizadas)
+
+El atacante añade su clave pública para entrar sin contraseña.
+
+- **Archivo**
+  - `~/.ssh/authorized_keys`
+
+- **Permisos Críticos**
+  - Directorio: `700` (`drwx------`)
+  - Archivo: `600` (`-rw-------`)
+
+Permisos más abiertos suelen bloquear el servicio SSH.
+
+## 4. Otros Vectores de Ejecución
+
+- **Shell**
+  - `.bashrc`, `.bash_profile` en `/home` (se ejecutan al abrir terminal)
+
+- **Boot**
+  - `/etc/rc.local` (scripts al final del arranque)
+
+- **Hardware (Udev)**
+  - `/etc/udev/rules.d/` (reglas que ejecutan scripts al conectar un USB)
+
+- **Entorno Gráfico**
+  - `/etc/xdg/autostart/` (se ejecutan al iniciar sesión gráfica)
+
+# G. Herramientas de Adquisición de Evidencia
+
+Métodos para capturar discos y memoria preservando la cadena de custodia.
+
+## 1. Adquisición de Disco (Línea de Comandos)
+
+| Herramienta | Características | Uso Recomendado |
+| :--- | :--- | :--- |
+| **dd** | Estándar Unix (1974). Sin hash nativo ni barra de progreso. | Sistemas antiguos o recuperación básica. |
+| **dcfldd** | Hash al vuelo (MD5/SHA). Verificación por bloques. | Cuando se requiere hash durante la copia. |
+| **dc3dd** | Estándar Forense (DoD). Logs de auditoría, gestión automática de bloques, progreso visual. | Opción preferente para forense formal. |
+
+## 2. Adquisición de Memoria Volátil (RAM)
+
+* **Herramienta:** AVML (*Acquire Volatile Memory for Linux*) de Microsoft.
+* **Ventaja:** Binario estático (no requiere instalación), compatible con `/dev/crash` y `/proc/kcore`.
+* **Procedimiento:** Ejecutar como `root`. Salida compatible con formato LiME.
+* **Verificación:** El tamaño del volcado debe coincidir exactamente con la RAM física.
+
+## 3. Triaje y Live Response (UAC)
+
+* **Herramienta:** UAC (*Unix-like Artifacts Collector*).
+* **Función:** Automatiza la recolección de artefactos volátiles (procesos, red) y estáticos (logs, configs) mediante scripts nativos.
+* **Salida:** Archivo `.tar.gz` conteniendo:
+    * **Bodyfile:** Listado de archivos para líneas de tiempo (*timelines*).
+    * **Live Response:** Salida de comandos de sistema (`netstat`, `ps`, `lsof`).
+    * **Root:** Copia parcial de archivos críticos (`/etc`, `/home`).
+
+# H. Creación y Análisis de Líneas de Tiempo (Timeline Analysis)
+
+## 1. Metodología Clásica (The Sleuth Kit)
+
+Proceso secuencial para convertir metadatos del disco en una hoja de cálculo analizable.
+
+1.  **Generación (fls):** Recorre la imagen recursivamente.
+    * Comando: `fls -r -m /imagen.dd > bodyfile.txt`
+2.  **Normalización (mactime):** Procesa el *bodyfile*.
+    * Uso de parámetros `-d` (CSV) y `-y` (ISO 8601) para estandarizar a UTC.
+3.  **Análisis (Timeline Explorer):** Filtrado por columna **MACB**:
+    * `deleted`: Archivo borrado recuperable.
+    * `deleted-realloc`: Archivo borrado y sobrescrito.
+
+## 2. Metodología "Super Timeline" (Plaso)
+
+Herramienta (`log2timeline`) que integra artefactos dispares (logs, historial web, sistema de archivos) en una vista única.
+
+* **log2timeline:** Motor (*parser*). Extrae eventos de la imagen y crea una base de datos de eventos.
+* **psort:** Filtrado y ordenación. Convierte la base de datos a un formato legible (CSV/Excel).
+* **psteel:** Orquestador que ejecuta la extracción y genera el reporte en un solo paso.
+
+**Valor Forense:** Permite correlacionar eventos de distinta naturaleza, como la descarga de un archivo (Historial Web), su ejecución posterior (Bash History) y su persistencia en el sistema (Systemd).
