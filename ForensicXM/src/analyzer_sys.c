@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "forensics.h"
 
 void identificar_sistema() {
@@ -7,7 +8,7 @@ void identificar_sistema() {
     char linea[256];
     char *nombre_distro = "Desconocida";
 
-    printf("\n--- [" GRN "Identificación del Sistema" RESET "] ---\n");
+    printf("\n--- [" GREEN "Identificación del Sistema" RESET "] ---\n");
 
     // Abrimos el archivo que contiene la info de la distro
     fp = fopen("/etc/os-release", "r");
