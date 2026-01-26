@@ -12,7 +12,8 @@
 void identificar_sistema();
 void analizar_usuarios();
 void analizar_persistencia();
-
+void analizar_logs(); 
+void analizar_logins_binarios(); 
 
 
 
