@@ -1,0 +1,344 @@
+============================================================
+        REPORTE FORENSE GENERADO POR FORENSICXM
+============================================================
+Fecha del Análisis: Thu Feb 12 20:45:47 2026
+
+--- [[32mIdentificación del Sistema[0m] ---
+[+] Distribución detectada: "Ubuntu 24.04.3 LTS"
+[+] Información del Kernel: ------------------------------------------
+
+--- [[32mAnálisis Forense de Usuarios[0m] ---
+[31m[!] Advertencia: Ejecuta con SUDO para analizar contraseñas (/etc/shadow)[0m
+Usuario         UID   Info Seguridad      
+------------------------------------------------------------
+root            0    
+daemon          1    
+bin             2    
+sys             3    
+sync            4    
+games           5    
+man             6    
+lp              7    
+mail            8    
+news            9    
+uucp            10   
+proxy           13   
+www-data        33   
+backup          34   
+list            38   
+irc             39   
+_apt            42   
+nobody          65534
+systemd-network 998  
+systemd-timesync 996  
+dhcpcd          100  
+messagebus      101  
+syslog          102  
+systemd-resolve 991  
+uuidd           103  
+usbmux          104  
+tss             105  
+systemd-oom     990  
+kernoops        106  
+whoopsie        107  
+dnsmasq         999  
+avahi           108  
+tcpdump         109  
+sssd            110  
+speech-dispatcher 111  
+cups-pk-helper  112  
+fwupd-refresh   989  
+saned           113  
+geoclue         114  
+cups-browsed    115  
+hplip           116  
+gnome-remote-desktop 988  
+polkitd         987  
+rtkit           117  
+colord          118  
+gnome-initial-setup 119  
+gdm             120  
+nm-openvpn      121  
+xavimp          1000 
+
+--- [[32mAnálisis de Persistencia y Contenido[0m] ---
+
+[+] Revisando Tareas Cron (/etc/cron.d)...
+    -> Analizando: e2scrub_all
+    -> Analizando: sysstat
+    -> Analizando: anacron
+
+[+] Revisando Servicios Systemd (/etc/systemd/system)...
+    -> Analizando: network-online.target.wants
+    -> Analizando: hibernate.target.wants
+    -> Analizando: snap-core24-1349.mount
+    -> Analizando: display-manager.service
+    -> Analizando: snap-firefox-6565.mount
+    -> Analizando: dbus-org.freedesktop.timesync1.service
+    -> Analizando: snap-firmware\x2dupdater-167.mount
+    -> Analizando: snap-snapd-25935.mount
+    -> Analizando: suspend.target.wants
+    -> Analizando: snap-snapd\x2ddesktop\x2dintegration-343.mount
+    -> Analizando: final.target.wants
+    -> Analizando: sysstat.service.wants
+    -> Analizando: dbus-org.freedesktop.thermald.service
+    -> Analizando: snapd.mounts.target.wants
+    -> Analizando: snap-thunderbird-769.mount
+    -> Analizando: snap-firefox-7766.mount
+    -> Analizando: dbus-org.bluez.service
+    -> Analizando: oem-config.service.wants
+    -> Analizando: snap-snapd-24792.mount
+    -> Analizando: snap-snapd\x2ddesktop\x2dintegration-315.mount
+    -> Analizando: cloud-config.target.wants
+    -> Analizando: snap-gtk\x2dcommon\x2dthemes-1535.mount
+    -> Analizando: sssd.service.wants
+    -> Analizando: graphical.target.wants
+    -> Analizando: emergency.target.wants
+    -> Analizando: dbus-org.freedesktop.Avahi.service
+    -> Analizando: dbus-fi.w1.wpa_supplicant1.service
+    -> Analizando: display-manager.service.wants
+    -> Analizando: snap-gnome\x2d42\x2d2204-202.mount
+    -> Analizando: snap-firmware\x2dupdater-210.mount
+    -> Analizando: sleep.target.wants
+    -> Analizando: syslog.service
+    -> Analizando: getty.target.wants
+    -> Analizando: sockets.target.wants
+    -> Analizando: rescue.target.wants
+    -> Analizando: snap-core22-2292.mount
+    -> Analizando: hybrid-sleep.target.wants
+    -> Analizando: suspend-then-hibernate.target.wants
+    -> Analizando: timers.target.wants
+    -> Analizando: bluetooth.target.wants
+    -> Analizando: dbus-org.freedesktop.nm-dispatcher.service
+    -> Analizando: snap-bare-5.mount
+    -> Analizando: snap-snap\x2dstore-1270.mount
+    -> Analizando: snap-core22-2045.mount
+    -> Analizando: paths.target.wants
+    -> Analizando: cloud-final.service.wants
+    -> Analizando: snap-curl-2384.mount
+[31m      [!] Alerta: Comando sospechoso 'curl' encontrado en el contenido.[0m
+          Línea: Description=Mount unit for curl, revision 2384
+[31m      [!] Alerta: Comando sospechoso 'curl' encontrado en el contenido.[0m
+          Línea: What=/var/lib/snapd/snaps/curl_2384.snap
+[31m      [!] Alerta: Comando sospechoso 'curl' encontrado en el contenido.[0m
+          Línea: Where=/snap/curl/2384
+    -> Analizando: multi-user.target.wants
+    -> Analizando: cloud-init.target.wants
+    -> Analizando: dbus-org.freedesktop.ModemManager1.service
+    -> Analizando: dbus-org.freedesktop.resolve1.service
+    -> Analizando: dbus-org.freedesktop.oom1.service
+    -> Analizando: printer.target.wants
+    -> Analizando: sysinit.target.wants
+
+------------------------------------------------------------
+
+--- [[32mAnálisis de Logs de Autenticación[0m] ---
+[+] Buscando anomalías en /var/log/auth.log...
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:06:01.064942+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[2635]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:15:01.077593+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[2855]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:17:01.108489+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[2869]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:25:01.141503+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[4783]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:29:34.562638+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:30:01.152847+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[5211]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:30:10.254377+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:30:17.539590+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:35:01.161080+00:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[5627]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:17:01.076363+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[2002]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:25:01.088567+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3410]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:35:01.122330+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3459]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:39:54.712504+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:42:55.812076+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:43:10.212310+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:53:19.093095+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:55:01.625614+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3370]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T02:59:39.774800+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:05:01.653757+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3597]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:10:01.665171+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3733]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:15:01.674070+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3813]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:16:11.951226+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:16:52.594570+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:17:01.717410+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8135]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:19:39.989112+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:20:53.475300+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:25:01.729807+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8160]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:26:09.329554+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:27:47.546464+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:28:17.773720+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:29:05.808425+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:33:54.498976+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:34:03.308874+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:34:47.710582+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T03:35:01.500879+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3227]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:25:01.297264+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3474]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:25:42.240924+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:26:11.467332+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:26:17.250852+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:30:01.308956+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[11539]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:32:16.789456+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:34:40.480390+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:35:01.938911+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3247]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:41:43.903826+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:42:34.195051+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:43:13.255700+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:43:31.605742+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:45:01.457661+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3043]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:47:14.296102+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:55:01.474808+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[5334]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T20:58:11.117816+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:05:01.489320+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6358]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[31m    [!] Intento fallido:[0m 2026-02-09T21:10:32.910356+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:auth): authentication failure; logname=xavimp uid=1000 euid=0 tty=/dev/pts/1 ruser=xavimp rhost=  user=xavimp
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:10:38.199275+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:12:09.521974+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:12:21.743304+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:12:30.738598+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:12:38.096372+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:15:01.503003+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8273]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:16:13.363786+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:16:23.862507+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:16:32.469069+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:16:45.341655+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:17:01.514644+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8437]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:17:02.411721+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:17:49.396093+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:17:53.469524+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-09T21:20:30.600756+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-10T16:45:01.311567+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[3039]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:02:44.929237+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:03:57.132364+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:03:58.147681+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:05:01.903898+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[7959]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:06:01.793981+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:06:56.823027+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:15:01.917298+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[11849]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:15:37.533677+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:16:25.533753+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:16:25.549762+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:16:25.716597+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:16:51.774907+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:16:51.791019+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:16:51.956289+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:17:01.933261+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[11968]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:25:01.949014+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[11996]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T13:30:01.962453+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[12007]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:13:34.116889+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:13:34.133791+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:13:34.301498+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:13:49.769202+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:15:01.984154+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[13176]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:15:32.760252+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:15:32.776283+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:15:35.193699+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:16:31.313702+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:16:49.610475+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:16:49.611689+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:16:51.066542+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:16:59.594852+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:17:01.995731+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[13710]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:17:09.298488+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:17:40.642477+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:20:40.950048+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:20:44.636817+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:21:14.242984+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:23:40.578437+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:25:01.010262+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[15753]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:27:10.911574+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:28:42.509977+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:28:56.013470+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:28:56.989317+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:29:04.715685+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:29:09.071306+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:29:41.112290+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:30:01.022453+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[22761]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:32:40.918378+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:35:01.034570+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[22900]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:45:01.050382+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[23347]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T14:55:01.065036+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[25093]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:33.713413+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:37.720539+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:38.699745+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:38.716917+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:39.608989+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:39.625141+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:39.641097+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:02:42.542943+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:04:29.402308+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:04:33.401465+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:05:01.080760+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[27345]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:05:40.837260+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:15:02.588704+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[29869]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:17:01.601000+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[29899]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:25:01.657587+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[31375]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:30:01.670921+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[31807]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:35:01.683311+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[32511]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T15:45:01.698457+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[32610]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:11:29.281274+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[32868]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:12:20.409873+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:12:27.293832+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:14:09.998131+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:15:01.293254+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[33285]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:15:26.477810+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:17:01.305656+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[33754]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:25:01.319997+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[35206]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:30:01.334358+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[35771]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:35:01.347131+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[36304]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:45:01.360946+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[37909]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:55:01.375843+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[39728]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:57:50.948294+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T17:57:51.043856+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:01:02.583003+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:04:47.191946+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:05:01.171974+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[5235]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:05:26.128131+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:05:32.164443+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:05:41.121093+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA sudo: pam_unix(sudo:session): session opened for user root(uid=0) by xavimp(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:15:01.188218+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6263]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:17:01.200686+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6269]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:25:01.218459+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6375]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:30:01.232418+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6386]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:35:01.244627+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6422]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T18:45:01.260830+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6444]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:12:55.349484+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6725]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:15:01.360652+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6742]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:17:01.373786+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[6768]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:25:01.387301+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[7782]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:30:01.401569+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8080]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:35:01.410391+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8192]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-02-12T20:45:01.424787+01:00 xavimp-Vivobook-ASUSLaptop-M1502YA-M1502YA CRON[8475]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+
+[31m[!] Alerta:[0m Se detectaron 1 intentos de autenticación fallidos.
+------------------------------------------------------------
+
+--- [[32mHistorial de Logins Binarios (/var/log/wtmp)[0m] ---
+Usuario         Terminal        Host                 Fecha/Hora          
+--------------------------------------------------------------------------------
+xavimp          seat0           login screen         Mon Feb  9 22:21:39 2026
+xavimp          tty2            tty2                 Mon Feb  9 22:21:39 2026
+xavimp          seat0           login screen         Tue Feb 10 02:17:02 2026
+xavimp          tty2            tty2                 Tue Feb 10 02:17:02 2026
+xavimp          seat0           login screen         Tue Feb 10 02:43:54 2026
+xavimp          tty2            tty2                 Tue Feb 10 02:43:54 2026
+xavimp          seat0           login screen         Tue Feb 10 02:49:03 2026
+xavimp          tty2            tty2                 Tue Feb 10 02:49:03 2026
+xavimp          seat0           login screen         Tue Feb 10 03:33:01 2026
+xavimp          tty2            tty2                 Tue Feb 10 03:33:01 2026
+xavimp          seat0           login screen         Tue Feb 10 04:18:56 2026
+xavimp          tty2            tty2                 Tue Feb 10 04:18:56 2026
+xavimp          seat0           login screen         Mon Feb  9 20:33:47 2026
+xavimp          tty2            tty2                 Mon Feb  9 20:33:47 2026
+xavimp          seat0           login screen         Mon Feb  9 20:37:07 2026
+xavimp          tty2            tty2                 Mon Feb  9 20:37:07 2026
+xavimp          seat0           login screen         Mon Feb  9 20:44:30 2026
+xavimp          tty2            tty2                 Mon Feb  9 20:44:30 2026
+xavimp          seat0           login screen         Mon Feb  9 21:41:41 2026
+xavimp          tty2            tty2                 Mon Feb  9 21:41:41 2026
+xavimp          seat0           login screen         Tue Feb 10 16:43:44 2026
+xavimp          tty2            tty2                 Tue Feb 10 16:43:44 2026
+xavimp          seat0           login screen         Tue Feb 10 16:44:44 2026
+xavimp          tty2            tty2                 Tue Feb 10 16:44:44 2026
+xavimp          seat0           login screen         Thu Feb 12 17:59:58 2026
+xavimp          tty2            tty2                 Thu Feb 12 17:59:58 2026
+--------------------------------------------------------------------------------
+
+============================================================
+        FIN DEL REPORTE - INTEGRIDAD DE LA PRUEBA
+============================================================

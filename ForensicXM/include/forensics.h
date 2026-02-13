@@ -14,6 +14,11 @@ void analizar_usuarios();
 void analizar_persistencia();
 void analizar_logs(); 
 void analizar_logins_binarios(); 
+void verificar_integridad(const char *ruta); 
+
+
+
+void generar_reporte_completo(const char *nombre_archivo); 
 
 
 
