@@ -29,6 +29,7 @@ void generar_reporte_completo(const char *nombre_archivo) {
     analizar_persistencia();  // Tema 6
     analizar_logs();          // Tema 4
     analizar_logins_binarios(); // Tema 4
+    analizar_red();             // Tema 6 & 7
 
     printf("\n============================================================\n");
     printf("        FIN DEL REPORTE - INTEGRIDAD DE LA PRUEBA\n");

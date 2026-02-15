@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
         {"persist", no_argument, 0, 'p'},
         {"logs", no_argument, 0, 'l'},
         {"bin", no_argument, 0, 'b'},
+        {"net", no_argument, 0, 'n'},
         {"integrity", required_argument, 0, 'i'},
         {"report", required_argument, 0, 'r'},
         {0, 0, 0, 0}
@@ -19,11 +20,11 @@ int main(int argc, char *argv[]) {
     
     // Si no hay argumentos, mostramos ayuda
     if (argc < 2) {
-        printf("ForensicXM - Uso: %s [-v] [-u] [-p] [-l] [-b] [-i <ruta>] [-r <nombre>]\n", argv[0]);        
+        printf("ForensicXM - Uso: %s [-v] [-u] [-p] [-l] [-b] [-n] [-i <ruta>] [-r <nombre>]\n", argv[0]);        
         return 1;
     }
 
-    while ((opt = getopt_long(argc, argv, "vuplbi:r:", long_options, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "vuplbni:r:", long_options, &option_index)) != -1) {
         switch (opt) {
             case 'v':
                 printf("ForensicXM v0.1\n");
@@ -40,6 +41,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'b':
                 analizar_logins_binarios();
+                break;
+            case 'n':
+                analizar_red();
                 break;
             case 'i':
                 if (optarg) {

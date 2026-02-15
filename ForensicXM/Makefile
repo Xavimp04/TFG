@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-I./include
-SRC=src/main.c src/analyzer_sys.c src/analyzer_users.c src/persistence.c src/analyzer_logs.c src/analyzer_bin.c src/analyzer_integrity.c src/report.c
+SRC=src/main.c src/analyzer_sys.c src/analyzer_users.c src/persistence.c src/analyzer_logs.c src/analyzer_bin.c src/analyzer_integrity.c src/report.c src/analyzer_net.c
 OBJ=$(SRC:.c=.o)
 BIN=bin/forensicXM
 
