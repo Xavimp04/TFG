@@ -16,6 +16,7 @@ void analizar_logs();
 void analizar_logins_binarios(); 
 void verificar_integridad(const char *ruta); 
 void analizar_red(); 
+void analizar_memoria(); 
 
 
 

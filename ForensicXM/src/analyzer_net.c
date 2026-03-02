@@ -5,7 +5,9 @@
 #include <dirent.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <limits.h>
 #include "forensics.h"
+
 
 // Función auxiliar para convertir IP hexadecimal a string (Little Endian)
 void hex_to_ip(char *hex, char *buffer) {
@@ -39,7 +41,7 @@ void encontrar_info_proceso(unsigned long inode, char *pid_buf, char *name_buf) 
         // Solo nos interesan los directorios que son números (PIDs)
         if (!isdigit(entry->d_name[0])) continue;
 
-        char path_fd[256];
+        char path_fd[512];
         snprintf(path_fd, sizeof(path_fd), "/proc/%s/fd", entry->d_name);
 
         DIR *dir_fd = opendir(path_fd);
@@ -48,8 +50,8 @@ void encontrar_info_proceso(unsigned long inode, char *pid_buf, char *name_buf) 
         struct dirent *entry_fd;
         while ((entry_fd = readdir(dir_fd)) != NULL) {
             if (entry_fd->d_type == DT_LNK) {
-                char link_target[256];
-                char path_link[512];
+                char link_target[PATH_MAX];
+                char path_link[PATH_MAX];
                 snprintf(path_link, sizeof(path_link), "%s/%s", path_fd, entry_fd->d_name);
 
                 ssize_t len = readlink(path_link, link_target, sizeof(link_target) - 1);
@@ -64,11 +66,11 @@ void encontrar_info_proceso(unsigned long inode, char *pid_buf, char *name_buf) 
                                 strcpy(pid_buf, entry->d_name);
                                 
                                 // Ahora buscamos el nombre del proceso en /proc/[pid]/comm
-                                char path_comm[256];
+                                char path_comm[PATH_MAX];
                                 snprintf(path_comm, sizeof(path_comm), "/proc/%s/comm", entry->d_name);
                                 FILE *fp_comm = fopen(path_comm, "r");
                                 if (fp_comm) {
-                                    if(fgets(name_buf, 256, fp_comm)) {
+                                    if(fgets(name_buf, PATH_MAX, fp_comm)) {
                                         // Quitar salto de línea
                                         name_buf[strcspn(name_buf, "\n")] = 0;
                                     }

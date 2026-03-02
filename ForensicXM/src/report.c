@@ -30,6 +30,7 @@ void generar_reporte_completo(const char *nombre_archivo) {
     analizar_logs();          // Tema 4
     analizar_logins_binarios(); // Tema 4
     analizar_red();             // Tema 6 & 7
+    analizar_memoria();         // Tema 6 (Malware volatile)
 
     printf("\n============================================================\n");
     printf("        FIN DEL REPORTE - INTEGRIDAD DE LA PRUEBA\n");
