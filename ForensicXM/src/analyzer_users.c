@@ -25,7 +25,10 @@ void analizar_usuarios() {
         printf(RED "[!] Advertencia: Ejecuta con SUDO para analizar contraseñas (/etc/shadow)" RESET "\n");
     }
 
-    fp_pass = fopen("/etc/passwd", "r");
+    char path_pass[1024];
+    snprintf(path_pass, sizeof(path_pass), "%s/etc/passwd", root_dir);
+
+    fp_pass = fopen(path_pass, "r");
     if (!fp_pass) return;
 
     printf("%-15s %-5s %-20s\n", "Usuario", "UID", "Info Seguridad");
@@ -35,8 +38,10 @@ void analizar_usuarios() {
         if (sscanf(linea, "%[^:]:%*[^:]:%d", usuario, &uid) == 2) {
             printf("%-15s %-5d", usuario, uid);
 
-            // Intentamos buscar su hash en /etc/shadow (Tema 4)
-            fp_shad = fopen("/etc/shadow", "r");
+            char path_shad[1024];
+            snprintf(path_shad, sizeof(path_shad), "%s/etc/shadow", root_dir);
+            // Intentamos buscar su hash en shadow (Tema 4)
+            fp_shad = fopen(path_shad, "r");
             if (fp_shad) {
                 int encontrado = 0;
                 while (fgets(linea_shad, sizeof(linea_shad), fp_shad)) {

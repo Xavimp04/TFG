@@ -22,6 +22,8 @@ void analizar_memoria();
 
 void generar_reporte_completo(const char *nombre_archivo); 
 
+extern char root_dir[1024];
+extern int modo_deadbox;
 
 
 #endif

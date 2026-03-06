@@ -10,8 +10,11 @@ void analizar_logins_binarios() {
 
     printf("\n--- [" GREEN "Historial de Logins Binarios (/var/log/wtmp)" RESET "] ---\n");
 
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/var/log/wtmp", root_dir);
+
     // Abrimos el archivo binario wtmp (Tema 4)
-    fp = fopen("/var/log/wtmp", "rb");
+    fp = fopen(path, "rb");
     if (fp == NULL) {
         perror(RED "    [-] Error al abrir /var/log/wtmp" RESET);
         return;

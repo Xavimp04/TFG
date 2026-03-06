@@ -10,8 +10,11 @@ void analizar_logs() {
     printf("\n--- [" GREEN "Análisis de Logs de Autenticación" RESET "] ---\n");
     printf("[+] Buscando anomalías en /var/log/auth.log...\n");
 
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/var/log/auth.log", root_dir);
+
     // Abrimos auth.log (Requiere sudo generalmente) 
-    fp = fopen("/var/log/auth.log", "r");
+    fp = fopen(path, "r");
     if (fp == NULL) {
         perror(RED "    [-] Error al abrir /var/log/auth.log (¿Has usado sudo?)" RESET);
         return;

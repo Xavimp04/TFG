@@ -55,11 +55,15 @@ void listar_directorio_persistencia(const char *ruta, const char *descripcion) {
 void analizar_persistencia() {
     printf("\n--- [" GREEN "Análisis de Persistencia y Contenido" RESET "] ---\n");
 
+    char path_cron[1024], path_systemd[1024];
+    snprintf(path_cron, sizeof(path_cron), "%s/etc/cron.d", root_dir);
+    snprintf(path_systemd, sizeof(path_systemd), "%s/etc/systemd/system", root_dir);
+
     // Revisión de Cron (Tema 6)
-    listar_directorio_persistencia("/etc/cron.d", "Tareas Cron");
+    listar_directorio_persistencia(path_cron, "Tareas Cron");
     
     // Revisión de Systemd (Tema 6)
-    listar_directorio_persistencia("/etc/systemd/system", "Servicios Systemd");
+    listar_directorio_persistencia(path_systemd, "Servicios Systemd");
 
     printf("\n------------------------------------------------------------\n");
 }

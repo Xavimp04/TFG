@@ -10,8 +10,11 @@ void identificar_sistema() {
 
     printf("\n--- [" GREEN "Identificación del Sistema" RESET "] ---\n");
 
+    char path[1024];
+    snprintf(path, sizeof(path), "%s/etc/os-release", root_dir);
+
     // Abrimos el archivo que contiene la info de la distro
-    fp = fopen("/etc/os-release", "r");
+    fp = fopen(path, "r");
     if (fp == NULL) {
         perror("Error al abrir /etc/os-release");
         return;

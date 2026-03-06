@@ -29,8 +29,14 @@ void generar_reporte_completo(const char *nombre_archivo) {
     analizar_persistencia();  // Tema 6
     analizar_logs();          // Tema 4
     analizar_logins_binarios(); // Tema 4
-    analizar_red();             // Tema 6 & 7
-    analizar_memoria();         // Tema 6 (Malware volatile)
+    if (!modo_deadbox) {
+        analizar_red();             // Tema 6 & 7
+        analizar_memoria();         // Tema 6 (Malware volatile)
+    } else {
+        printf("\n============================================================\n");
+        printf("        MODO DEADBOX: Análisis de Red y Memoria omitidos\n");
+        printf("============================================================\n");
+    }
 
     printf("\n============================================================\n");
     printf("        FIN DEL REPORTE - INTEGRIDAD DE LA PRUEBA\n");
