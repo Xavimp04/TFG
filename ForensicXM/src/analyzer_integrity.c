@@ -1,48 +1,69 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <sys/stat.h>
+#include <sys/syscall.h>
+#include <fcntl.h>
 #include <time.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <linux/stat.h>
 #include "forensics.h"
 
 void verificar_integridad(const char *ruta) {
-    struct stat st;
+    struct statx stx;
 
-    printf("\n--- [" GREEN "Análisis de Integridad y Metadatos" RESET "] ---\n");
+    printf("\n--- [" GREEN "Análisis de Integridad y Metadatos (MACB)" RESET "] ---\n");
     printf("[+] Analizando: %s\n", ruta);
 
-    if (stat(ruta, &st) == -1) {
-        perror(RED "    [-] Error al acceder al archivo" RESET);
+    if (syscall(SYS_statx, AT_FDCWD, ruta, AT_SYMLINK_NOFOLLOW, STATX_ALL, &stx) == -1) {
+        perror(RED "    [-] Error al acceder al archivo (statx falló)" RESET);
         return;
     }
 
     // 1. Mostrar información básica (Tema 5)
-    printf("    -> Tamaño: %ld bytes\n", st.st_size);
-    printf("    -> Inodo:  %ld\n", st.st_ino);
-    printf("    -> UID/GID: %d / %d\n", st.st_uid, st.st_gid);
+    printf("    -> Tamaño: %llu bytes\n", (unsigned long long)stx.stx_size);
+    printf("    -> Inodo:  %llu\n", (unsigned long long)stx.stx_ino);
+    printf("    -> UID/GID: %d / %d\n", stx.stx_uid, stx.stx_gid);
 
     // 2. Mostrar sellos de tiempo (Tema 5: MACB)
-    char mtime[24], atime[24], ctime[24];
-    strftime(mtime, 24, "%Y-%m-%d %H:%M:%S", localtime(&st.st_mtime));
-    strftime(atime, 24, "%Y-%m-%d %H:%M:%S", localtime(&st.st_atime));
-    strftime(ctime, 24, "%Y-%m-%d %H:%M:%S", localtime(&st.st_ctime));
+    char mtime[24], atime[24], ctime[24], btime[24];
+    
+    time_t t_mtime = stx.stx_mtime.tv_sec;
+    time_t t_atime = stx.stx_atime.tv_sec;
+    time_t t_ctime = stx.stx_ctime.tv_sec;
+    
+    strftime(mtime, 24, "%Y-%m-%d %H:%M:%S", localtime(&t_mtime));
+    strftime(atime, 24, "%Y-%m-%d %H:%M:%S", localtime(&t_atime));
+    strftime(ctime, 24, "%Y-%m-%d %H:%M:%S", localtime(&t_ctime));
 
-    printf("\n    [Sellos de Tiempo]\n");
+    printf("\n    [Sellos de Tiempo Forense (MACB)]\n");
     printf("    -> Modificación (M): %s\n", mtime);
     printf("    -> Acceso (A):       %s\n", atime);
     printf("    -> Cambio Inodo (C): %s\n", ctime);
 
-    // Detección de anomalías de Timestomping (Tema 5)
-    if (st.st_mtim.tv_nsec == 0 && st.st_atim.tv_nsec == 0) {
-        printf(RED "    [!] ALERTA: Posible Timestomping detectado (Nanosegundos en cero)." RESET "\n");
+    // Comprobamos si el Birth Time está soportado por el FS
+    if (stx.stx_mask & STATX_BTIME) {
+        time_t t_btime = stx.stx_btime.tv_sec;
+        strftime(btime, 24, "%Y-%m-%d %H:%M:%S", localtime(&t_btime));
+        printf("    -> Nacimiento (B):   %s\n", btime);
+        
+        // Detección de Timestomping más precisa (M anterior a B)
+        if (stx.stx_mtime.tv_sec < stx.stx_btime.tv_sec) {
+            printf(RED "    [!] ALERTA CRÍTICA: Timestomping detectado (Modificación anterior a Creación)." RESET "\n");
+        }
+    } else {
+        printf("    -> Nacimiento (B):   " YELLOW "No soportado por el sistema de archivos" RESET "\n");
+    }
+
+    // Detección de Timestomping secundaria (nanosegundos a cero)
+    if (stx.stx_mtime.tv_nsec == 0 && stx.stx_atime.tv_nsec == 0) {
+        printf(RED "    [!] ALERTA: Timestomping posible (Nanosegundos borrados)." RESET "\n");
     }
 
     // 3. Calcular Hash SHA-256 (Tema 7)
     printf("\n    [Firma Digital]\n");
-    char comando[1024];
-    snprintf(comando, sizeof(comando), "sha256sum %s", ruta);
     printf("    -> ");
-    fflush(stdout);
-    system(comando);
+    calcular_sha256_archivo(ruta);
 
     printf("------------------------------------------------------------\n");
 }

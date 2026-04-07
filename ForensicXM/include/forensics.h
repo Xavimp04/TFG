@@ -17,13 +17,21 @@ void analizar_logins_binarios();
 void verificar_integridad(const char *ruta); 
 void analizar_red(); 
 void analizar_memoria(); 
+void analizar_rootkits();
+void analizar_capacidades();
 
 
 
 void generar_reporte_completo(const char *nombre_archivo); 
 
+#include "cJSON.h"
+
 extern char root_dir[1024];
 extern int modo_deadbox;
+extern int modo_json;
+extern cJSON *json_report;
+
+void calcular_sha256_archivo(const char *ruta); 
 
 
 #endif
