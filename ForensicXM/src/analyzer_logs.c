@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "forensics.h"
 
 void analizar_logs() {
@@ -13,10 +14,16 @@ void analizar_logs() {
     char path[1024];
     snprintf(path, sizeof(path), "%s/var/log/auth.log", root_dir);
 
-    // Abrimos auth.log (Requiere sudo generalmente) 
+    // Intentamos auth.log (Debian/Ubuntu)
+    if (access(path, F_OK) != 0) {
+        // Fallback a secure (RHEL/CentOS/Fedora)
+        snprintf(path, sizeof(path), "%s/var/log/secure", root_dir);
+    }
+
+    // Abrimos el log activo (Requiere sudo generalmente) 
     fp = fopen(path, "r");
     if (fp == NULL) {
-        perror(RED "    [-] Error al abrir /var/log/auth.log (¿Has usado sudo?)" RESET);
+        printf(RED "    [-] Error al abrir logs de autenticación en %s (¿Has usado sudo?)\n" RESET, path);
         return;
     }
 

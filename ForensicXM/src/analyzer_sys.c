@@ -31,11 +31,21 @@ void identificar_sistema() {
     }
     fclose(fp);
 
-    // También es útil saber la versión del Kernel (La base según tu teoría)
-    // Usamos una llamada simple al sistema para este ejemplo inicial
-    printf("[+] Información del Kernel: ");
-    fflush(stdout); // Asegura que el texto anterior se imprima antes
-    system("uname -rsv"); 
+    // Eliminamos la llamada insegura system("uname -rsv")
+    // En su lugar, abrimos directamente /proc/version de las estructuras del Kernel (Tema 8/Forensics)
+    char proc_version_path[1024];
+    snprintf(proc_version_path, sizeof(proc_version_path), "%s/proc/version", root_dir);
+    
+    FILE *fp_vers = fopen(proc_version_path, "r");
+    if (fp_vers) {
+        char version_line[512];
+        if (fgets(version_line, sizeof(version_line), fp_vers)) {
+            printf("[+] Información del Kernel: %s", version_line);
+        }
+        fclose(fp_vers);
+    } else {
+        printf(YELLOW "[-] Información del Kernel: No disponible (no se pudo leer %s)\n" RESET, proc_version_path);
+    }
     
     printf("------------------------------------------\n");
 }
