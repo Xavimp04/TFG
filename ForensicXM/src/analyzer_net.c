@@ -9,8 +9,12 @@
 #include "forensics.h"
 
 
-// Función auxiliar para convertir IP hexadecimal a string (Little Endian)
-void hex_to_ip(char *hex, char *buffer) {
+/**
+ * @brief Convierte una dirección IP en formato hexadecimal (Little Endian) a string (notación punto-decimal).
+ * @param hex Cadena hexadecimal leída de /proc/net/tcp.
+ * @param buffer Búfer donde se almacenará la IP resultante.
+ */
+static void hex_to_ip(char *hex, char *buffer) {
     unsigned int ip;
     sscanf(hex, "%X", &ip);
     struct in_addr addr;
@@ -18,8 +22,12 @@ void hex_to_ip(char *hex, char *buffer) {
     strcpy(buffer, inet_ntoa(addr));
 }
 
-// Función auxiliar para convertir Puerto hexadecimal a entero
-int hex_to_port(char *hex) {
+/**
+ * @brief Convierte un puerto en formato hexadecimal a un entero.
+ * @param hex Cadena hexadecimal que representa el puerto.
+ * @return El número de puerto en formato decimal.
+ */
+static int hex_to_port(char *hex) {
     unsigned int port;
     sscanf(hex, "%X", &port);
     return port;
@@ -36,8 +44,13 @@ SocketProcessMap *socket_map = NULL;
 int socket_map_count = 0;
 int socket_map_capacity = 0;
 
-// Agrega un socket al mapa
-void add_socket_map(unsigned long inode, const char* pid, const char* name) {
+/**
+ * @brief Agrega un socket (inode) y la información de su proceso al mapa en memoria.
+ * @param inode El número de inodo del socket.
+ * @param pid El Process ID asociado al socket.
+ * @param name El nombre del proceso ejecutable.
+ */
+static void add_socket_map(unsigned long inode, const char* pid, const char* name) {
     if (socket_map_count >= socket_map_capacity) {
         socket_map_capacity = (socket_map_capacity == 0) ? 1024 : socket_map_capacity * 2;
         socket_map = realloc(socket_map, socket_map_capacity * sizeof(SocketProcessMap));
@@ -50,8 +63,10 @@ void add_socket_map(unsigned long inode, const char* pid, const char* name) {
     socket_map_count++;
 }
 
-// Recorre /proc una sola vez y almacena todos los inodes de sockets
-void preload_process_sockets() {
+/**
+ * @brief Recorre todos los procesos en /proc y mapea sus inodos de socket a sus respectivos PIDs y Nombres.
+ */
+static void preload_process_sockets() {
     DIR *dir;
     struct dirent *entry;
     
@@ -61,7 +76,7 @@ void preload_process_sockets() {
     while ((entry = readdir(dir)) != NULL) {
         if (!isdigit(entry->d_name[0])) continue;
 
-        char path_fd[512];
+        char path_fd[PATH_MAX];
         snprintf(path_fd, sizeof(path_fd), "/proc/%s/fd", entry->d_name);
 
         DIR *dir_fd = opendir(path_fd);
@@ -74,7 +89,7 @@ void preload_process_sockets() {
         while ((entry_fd = readdir(dir_fd)) != NULL) {
             if (entry_fd->d_type == DT_LNK) {
                 char link_target[PATH_MAX];
-                char path_link[PATH_MAX];
+                char path_link[PATH_MAX + 256];
                 snprintf(path_link, sizeof(path_link), "%s/%s", path_fd, entry_fd->d_name);
 
                 ssize_t len = readlink(path_link, link_target, sizeof(link_target) - 1);
@@ -106,8 +121,13 @@ void preload_process_sockets() {
     closedir(dir);
 }
 
-// Búsqueda en el array precargado
-void encontrar_info_proceso_opt(unsigned long inode, char *pid_buf, char *name_buf) {
+/**
+ * @brief Busca la información de un proceso (PID y Nombre) a partir del inodo de su socket.
+ * @param inode Inodo del socket a buscar.
+ * @param pid_buf Búfer de salida para el PID encontrado (o "-" si no se encuentra).
+ * @param name_buf Búfer de salida para el Nombre encontrado (o "-" si no se encuentra).
+ */
+static void encontrar_info_proceso_opt(unsigned long inode, char *pid_buf, char *name_buf) {
     strcpy(pid_buf, "-");
     strcpy(name_buf, "-");
     for (int i = 0; i < socket_map_count; i++) {
@@ -119,8 +139,10 @@ void encontrar_info_proceso_opt(unsigned long inode, char *pid_buf, char *name_b
     }
 }
 
-// Limpia el mapa de memoria
-void cleanup_socket_map() {
+/**
+ * @brief Libera la memoria asignada dinámicamente para el mapa de sockets.
+ */
+static void cleanup_socket_map() {
     if (socket_map) {
         free(socket_map);
         socket_map = NULL;
@@ -129,7 +151,8 @@ void cleanup_socket_map() {
     socket_map_capacity = 0;
 }
 
-void analizar_red() {
+void analizar_red(ForensicContext *ctx) {
+    (void)ctx; // Parámetro de interfaz no usado porque lee directamente de /proc
     FILE *fp;
     char linea[1024];
     char local_addr_hex[64], rem_addr_hex[64];
@@ -145,8 +168,8 @@ void analizar_red() {
     };
 
     cJSON *net_array = NULL;
-    if (modo_json) {
-        net_array = cJSON_AddArrayToObject(json_report, "network_connections");
+    if (ctx->modo_json) {
+        net_array = cJSON_AddArrayToObject(ctx->json_report, "network_connections");
     } else {
         printf("\n--- [" GREEN "Análisis de Conexiones de Red (Sin netstat)" RESET "] ---\n");
         if (geteuid() != 0) {
@@ -167,13 +190,14 @@ void analizar_red() {
     }
 
     // Saltamos la primera línea (cabecera)
-    fgets(linea, sizeof(linea), fp);
+    if (!fgets(linea, sizeof(linea), fp)) {
+        fclose(fp);
+        return;
+    }
 
     while (fgets(linea, sizeof(linea), fp)) {
         // Formato: sl  local_address rem_address   st ... inode
         // Ejemplo:  0: 0100007F:1F90 00000000:0000 0A ... 20601
-        
-        char dummy[64]; // Para saltar campos intermedios
         
         // Un parsing manual simple
         char *token = strtok(linea, " "); // sl
@@ -220,7 +244,7 @@ void analizar_red() {
                  char pid_str[16], name_str[64];
                  encontrar_info_proceso_opt(inode, pid_str, name_str);
 
-                 if (modo_json && net_array) {
+                 if (ctx->modo_json && net_array) {
                      cJSON *conn_item = cJSON_CreateObject();
                      cJSON_AddStringToObject(conn_item, "protocol", "TCP");
                      cJSON_AddStringToObject(conn_item, "local_address", local_str);
@@ -250,7 +274,7 @@ void analizar_red() {
 
     fclose(fp);
     cleanup_socket_map();
-    if (!modo_json) {
+    if (!ctx->modo_json) {
         printf("--------------------------------------------------------------------------------------------------\n");
     }
 }

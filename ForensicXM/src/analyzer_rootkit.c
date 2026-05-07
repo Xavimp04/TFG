@@ -3,6 +3,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <limits.h>
 #include "forensics.h"
 
 #define MAX_MODULES 1024
@@ -12,8 +13,10 @@
 char proc_modules[MAX_MODULES][MOD_NAME_LEN];
 int proc_modules_count = 0;
 
-// Lee /proc/modules y guarda los nombres encontrados
-void preload_proc_modules() {
+/**
+ * @brief Lee /proc/modules y almacena en memoria los módulos cargados (Vista High-Level).
+ */
+static void preload_proc_modules() {
     FILE *fp;
     char linea[512];
     
@@ -28,16 +31,19 @@ void preload_proc_modules() {
         char mod_name[MOD_NAME_LEN];
         // La primera palabra de cada línea es el nombre del módulo
         if (sscanf(linea, "%127s", mod_name) == 1) {
-            strncpy(proc_modules[proc_modules_count], mod_name, MOD_NAME_LEN - 1);
-            proc_modules[proc_modules_count][MOD_NAME_LEN - 1] = '\0';
+            snprintf(proc_modules[proc_modules_count], MOD_NAME_LEN, "%s", mod_name);
             proc_modules_count++;
         }
     }
     fclose(fp);
 }
 
-// Verifica si un módulo existe en nuestro array extraído de /proc/modules
-int is_module_in_proc(const char *mod_name) {
+/**
+ * @brief Verifica si un módulo de sysfs existe en la lista previamente cargada de /proc/modules.
+ * @param mod_name Nombre del módulo a verificar.
+ * @return 1 si el módulo fue encontrado, 0 si está oculto.
+ */
+static int is_module_in_proc(const char *mod_name) {
     for (int i = 0; i < proc_modules_count; i++) {
         // En sysfs los guiones pueden aparecer como barras bajas y viceversa, o ser exactos.
         // Hacemos una comparación estricta primero.
@@ -49,7 +55,8 @@ int is_module_in_proc(const char *mod_name) {
 }
 
 // Analiza ambas fuentes y busca inconsistencias
-void analizar_rootkits() {
+void analizar_rootkits(ForensicContext *ctx) {
+    (void)ctx; // Parámetro de interfaz no usado porque lee directamente de /proc y /sys
     DIR *dir;
     struct dirent *entry;
     int sospechosos = 0;
@@ -57,8 +64,8 @@ void analizar_rootkits() {
     printf("\n--- [" GREEN "Análisis Avanzado: Detección de Rootkits LKM" RESET "] ---\n");
     
     cJSON *rk_array = NULL;
-    if (modo_json) {
-        rk_array = cJSON_AddArrayToObject(json_report, "rootkits");
+    if (ctx->modo_json) {
+        rk_array = cJSON_AddArrayToObject(ctx->json_report, "rootkits");
     } else {
         if (geteuid() != 0) {
             printf(YELLOW "[!] Nota: Algunas lecturas del Kernel pueden requerir SUDO.\n" RESET);
@@ -91,11 +98,13 @@ void analizar_rootkits() {
         // COMPROBACIÓN CRÍTICA: Ignorar built-in modules
         // Los módulos cargables dinámicamente suelen tener un archivo 'initstate'
         // Si no lo tiene, asumimos que está incrustado en el kernel y no nos preocupa por ahora.
-        char initstate_path[512];
+        char initstate_path[PATH_MAX];
         snprintf(initstate_path, sizeof(initstate_path), "/sys/module/%s/initstate", sys_mod_name);
-        if (access(initstate_path, F_OK) != 0) {
+        FILE *fp_init = fopen(initstate_path, "r");
+        if (!fp_init) {
             continue; // No es un módulo LKM (Loadable Kernel Module) normal, lo ignoramos.
         }
+        fclose(fp_init);
 
         // 3. El módulo es cargable. ¿Apareció en /proc/modules?
         if (!is_module_in_proc(sys_mod_name)) {
@@ -107,7 +116,7 @@ void analizar_rootkits() {
                 if (sys_mod_name_dash[i] == '-') sys_mod_name_dash[i] = '_';
             }
             if(!is_module_in_proc(sys_mod_name_dash)){
-                if (modo_json && rk_array) {
+                if (ctx->modo_json && rk_array) {
                     cJSON *rk_item = cJSON_CreateObject();
                     cJSON_AddStringToObject(rk_item, "hidden_module", entry->d_name);
                     cJSON_AddStringToObject(rk_item, "severity", "CRITICAL");
@@ -123,7 +132,7 @@ void analizar_rootkits() {
     
     closedir(dir);
 
-    if (!modo_json) {
+    if (!ctx->modo_json) {
         if (sospechosos == 0) {
             printf(GREEN "    [+] Análisis limpio. No se detectaron discrepancias de módulos." RESET "\n");
         } else {

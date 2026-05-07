@@ -14,12 +14,18 @@
 #define CAP_SYS_MODULE  16
 #define CAP_DAC_OVERRIDE 1
 
-// Comprueba si un bit específico está encendido en el mapa de bits (64-bit mask)
-int has_capability(unsigned long long caps_mask, int cap_bit) {
+/**
+ * @brief Comprueba si un bit específico (capacidad) está encendido en una máscara de 64 bits.
+ * @param caps_mask Máscara hexadecimal de las capacidades efectivas del proceso.
+ * @param cap_bit El número de bit de la capacidad a comprobar (ej. CAP_NET_RAW).
+ * @return 1 si la capacidad está presente, 0 en caso contrario.
+ */
+static int has_capability(unsigned long long caps_mask, int cap_bit) {
     return (caps_mask & (1ULL << cap_bit)) != 0;
 }
 
-void analizar_capacidades() {
+void analizar_capacidades(ForensicContext *ctx) {
+    (void)ctx; // Parámetro de interfaz no usado porque lee directamente de /proc
     DIR *dir;
     struct dirent *entry;
     int sospechosos = 0;
@@ -27,8 +33,8 @@ void analizar_capacidades() {
     printf("\n--- [" GREEN "Análisis de Privilegios: Linux Capabilities" RESET "] ---\n");
     
     cJSON *caps_array = NULL;
-    if (modo_json) {
-        caps_array = cJSON_AddArrayToObject(json_report, "capabilities");
+    if (ctx->modo_json) {
+        caps_array = cJSON_AddArrayToObject(ctx->json_report, "capabilities");
     } else {
         if (geteuid() != 0) {
             printf(YELLOW "[!] Nota: Ejecuta con SUDO para poder acceder a todos los procesos.\n" RESET);
@@ -104,7 +110,7 @@ void analizar_capacidades() {
             }
 
             if (is_critical || !is_critical) {
-                if (modo_json && caps_array) {
+                if (ctx->modo_json && caps_array) {
                     cJSON *cap_item = cJSON_CreateObject();
                     cJSON_AddNumberToObject(cap_item, "pid", atoi(entry->d_name));
                     cJSON_AddNumberToObject(cap_item, "uid", uid);
@@ -134,7 +140,7 @@ void analizar_capacidades() {
     
     closedir(dir);
 
-    if (!modo_json) {
+    if (!ctx->modo_json) {
         if (sospechosos == 0) {
             printf(GREEN "\n    [+] No se detectaron procesos no-root con capacidades críticas." RESET "\n");
         } else {

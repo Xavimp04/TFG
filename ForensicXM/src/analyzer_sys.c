@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "forensics.h"
 
-void identificar_sistema() {
+void identificar_sistema(ForensicContext *ctx) {
     FILE *fp;
     char linea[256];
     char *nombre_distro = "Desconocida";
 
     printf("\n--- [" GREEN "Identificación del Sistema" RESET "] ---\n");
 
-    char path[1024];
-    snprintf(path, sizeof(path), "%s/etc/os-release", root_dir);
+    char path[PATH_MAX];
+    snprintf(path, sizeof(path), "%s/etc/os-release", ctx->root_dir);
 
     // Abrimos el archivo que contiene la info de la distro
     fp = fopen(path, "r");
@@ -33,8 +34,8 @@ void identificar_sistema() {
 
     // Eliminamos la llamada insegura system("uname -rsv")
     // En su lugar, abrimos directamente /proc/version de las estructuras del Kernel (Tema 8/Forensics)
-    char proc_version_path[1024];
-    snprintf(proc_version_path, sizeof(proc_version_path), "%s/proc/version", root_dir);
+    char proc_version_path[PATH_MAX];
+    snprintf(proc_version_path, sizeof(proc_version_path), "%s/proc/version", ctx->root_dir);
     
     FILE *fp_vers = fopen(proc_version_path, "r");
     if (fp_vers) {

@@ -49,7 +49,8 @@ void check_rwx_memory(const char *pid, const char *proc_name) {
     }
 }
 
-void analizar_memoria() {
+void analizar_memoria(ForensicContext *ctx) {
+    (void)ctx; // Parámetro de interfaz no usado porque lee directamente de /proc
     DIR *dir;
     struct dirent *entry;
 

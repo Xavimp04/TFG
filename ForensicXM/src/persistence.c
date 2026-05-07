@@ -3,10 +3,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
 #include "forensics.h"
 
-// Función para buscar strings maliciosos dentro de los archivos (Tema 6)
-void escanear_contenido_sospechoso(const char *ruta_archivo) {
+/**
+ * @brief Busca strings maliciosos conocidos dentro de un archivo.
+ * @param ruta_archivo Ruta completa del archivo a escanear.
+ */
+static void escanear_contenido_sospechoso(const char *ruta_archivo) {
     FILE *fp = fopen(ruta_archivo, "r");
     if (!fp) return;
 
@@ -25,16 +29,24 @@ void escanear_contenido_sospechoso(const char *ruta_archivo) {
     fclose(fp);
 }
 
-void listar_directorio_persistencia(const char *ruta, const char *descripcion) {
+/**
+ * @brief Recorre un directorio buscando archivos de persistencia y los escanea.
+ * @param ruta Ruta del directorio a listar.
+ * @param descripcion Descripción legible del tipo de persistencia analizada.
+ * @param silent_fail Si es 1, no imprime error en caso de que el directorio no exista.
+ */
+static void listar_directorio_persistencia(const char *ruta, const char *descripcion, int silent_fail) {
     struct dirent *entry;
     DIR *dp = opendir(ruta);
 
-    printf("\n[+] Revisando %s (%s)...\n", descripcion, ruta);
-    
     if (dp == NULL) {
-        printf(RED "    [-] No se pudo acceder a %s" RESET "\n", ruta);
+        if (!silent_fail) {
+            printf(RED "    [-] No se pudo acceder a %s" RESET "\n", ruta);
+        }
         return;
     }
+
+    printf("\n[+] Revisando %s (%s)...\n", descripcion, ruta);
 
     while ((entry = readdir(dp))) {
         if (entry->d_name[0] == '.') continue;
@@ -42,7 +54,7 @@ void listar_directorio_persistencia(const char *ruta, const char *descripcion) {
         printf("    -> Analizando: %s\n", entry->d_name);
         
         // Construimos la ruta completa para abrir el archivo
-        char ruta_completa[1024];
+        char ruta_completa[PATH_MAX];
         snprintf(ruta_completa, sizeof(ruta_completa), "%s/%s", ruta, entry->d_name);
         
         // Solo escaneamos si es un archivo regular (no una carpeta .wants)
@@ -53,55 +65,49 @@ void listar_directorio_persistencia(const char *ruta, const char *descripcion) {
     closedir(dp);
 }
 
-void analizar_persistencia() {
+void analizar_persistencia(ForensicContext *ctx) {
     printf("\n--- [" GREEN "Análisis de Persistencia y Contenido" RESET "] ---\n");
 
-    char path_cron[1024], path_systemd[1024];
-    snprintf(path_cron, sizeof(path_cron), "%s/etc/cron.d", root_dir);
-    snprintf(path_systemd, sizeof(path_systemd), "%s/etc/systemd/system", root_dir);
+    char path_cron[PATH_MAX], path_systemd[PATH_MAX];
+    snprintf(path_cron, sizeof(path_cron), "%s/etc/cron.d", ctx->root_dir);
+    snprintf(path_systemd, sizeof(path_systemd), "%s/etc/systemd/system", ctx->root_dir);
 
-    // Revisión de Cron Global (Tema 6)
-    listar_directorio_persistencia(path_cron, "Tareas Cron (Global)");
+    // Revisión de Cron Global 
+    listar_directorio_persistencia(path_cron, "Tareas Cron (Global)", 0);
     
     // Revisión de Cron de Usuarios
-    char path_user_cron[1024];
-    snprintf(path_user_cron, sizeof(path_user_cron), "%s/var/spool/cron/crontabs", root_dir);
-    if (access(path_user_cron, F_OK) == 0) {
-        listar_directorio_persistencia(path_user_cron, "Tareas Cron (Usuarios)");
-    }
+    char path_user_cron[PATH_MAX];
+    snprintf(path_user_cron, sizeof(path_user_cron), "%s/var/spool/cron/crontabs", ctx->root_dir);
+    listar_directorio_persistencia(path_user_cron, "Tareas Cron (Usuarios)", 1);
 
-    // Revisión de Systemd Global (Tema 6)
-    listar_directorio_persistencia(path_systemd, "Servicios Systemd (Global)");
+    // Revisión de Systemd Global
+    listar_directorio_persistencia(path_systemd, "Servicios Systemd (Global)", 0);
 
     // Revisión de Systemd de Usuarios (Localizados en /home/*/.config/systemd/user)
-    char path_home[1024];
-    snprintf(path_home, sizeof(path_home), "%s/home", root_dir);
+    char path_home[PATH_MAX];
+    snprintf(path_home, sizeof(path_home), "%s/home", ctx->root_dir);
     DIR *dp_home = opendir(path_home);
     if (dp_home) {
         struct dirent *entry_home;
         while ((entry_home = readdir(dp_home))) {
             if (entry_home->d_name[0] == '.') continue;
             if (entry_home->d_type == DT_DIR) {
-                char path_user_systemd[1024];
-                snprintf(path_user_systemd, sizeof(path_user_systemd), "%s/home/%s/.config/systemd/user", root_dir, entry_home->d_name);
+                char path_user_systemd[PATH_MAX];
+                snprintf(path_user_systemd, sizeof(path_user_systemd), "%s/home/%s/.config/systemd/user", ctx->root_dir, entry_home->d_name);
                 
-                // Evitamos imprimir error si la ruta no existe para mantener la salida limpia
-                if (access(path_user_systemd, R_OK) == 0) {
-                    char desc[256];
-                    snprintf(desc, sizeof(desc), "Systemd Units (Usu %s)", entry_home->d_name);
-                    listar_directorio_persistencia(path_user_systemd, desc);
-                }
+                char desc[512];
+                snprintf(desc, sizeof(desc), "Systemd Units (Usu %s)", entry_home->d_name);
+                // La función de persistencia ya maneja el fallo silencioso
+                listar_directorio_persistencia(path_user_systemd, desc, 1);
             }
         }
         closedir(dp_home);
     }
     
     // Y verificamos el systemd user del usuario ROOT también
-    char path_root_systemd[1024];
-    snprintf(path_root_systemd, sizeof(path_root_systemd), "%s/root/.config/systemd/user", root_dir);
-    if (access(path_root_systemd, R_OK) == 0) {
-        listar_directorio_persistencia(path_root_systemd, "Systemd Units (Root User)");
-    }
+    char path_root_systemd[PATH_MAX];
+    snprintf(path_root_systemd, sizeof(path_root_systemd), "%s/root/.config/systemd/user", ctx->root_dir);
+    listar_directorio_persistencia(path_root_systemd, "Systemd Units (Root User)", 1);
 
     printf("\n------------------------------------------------------------\n");
 }

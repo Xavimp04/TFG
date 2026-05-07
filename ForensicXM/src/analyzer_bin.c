@@ -2,16 +2,17 @@
 #include <utmp.h>
 #include <time.h>
 #include <string.h>
+#include <limits.h>
 #include "forensics.h"
 
-void analizar_logins_binarios() {
+void analizar_logins_binarios(ForensicContext *ctx) {
     struct utmp registro;
     FILE *fp;
 
     printf("\n--- [" GREEN "Historial de Logins Binarios (/var/log/wtmp)" RESET "] ---\n");
 
-    char path[1024];
-    snprintf(path, sizeof(path), "%s/var/log/wtmp", root_dir);
+    char path[PATH_MAX];
+    snprintf(path, sizeof(path), "%s/var/log/wtmp", ctx->root_dir);
 
     // Abrimos el archivo binario wtmp (Tema 4)
     fp = fopen(path, "rb");

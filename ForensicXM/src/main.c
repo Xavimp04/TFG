@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <getopt.h>
+#include <stdlib.h>
 #include "forensics.h"
 #include <string.h>
+#include <limits.h>
 
-char root_dir[1024] = "";
-int modo_deadbox = 0;
-int modo_json = 0;
-cJSON *json_report = NULL;
 
 int main(int argc, char *argv[]) {
     int opt;
     int option_index = 0;
+    ForensicContext ctx;
+    memset(&ctx, 0, sizeof(ForensicContext));
 
     static struct option long_options[] = {
         {"version", no_argument, 0, 'v'},
@@ -40,52 +40,52 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'v':
                 printf("ForensicXM v0.1\n");
-                identificar_sistema();  // Mostramos la distro al pedir la versión
+                identificar_sistema(&ctx);  // Mostramos la distro al pedir la versión
                 break;
             case 'u':
-                analizar_usuarios();
+                analizar_usuarios(&ctx);
                 break;
             case 'p':
-                analizar_persistencia();
+                analizar_persistencia(&ctx);
                 break;
             case 'l':
-                analizar_logs();
+                analizar_logs(&ctx);
                 break;
             case 'b':
-                analizar_logins_binarios();
+                analizar_logins_binarios(&ctx);
                 break;
             case 'n':
-                if (modo_deadbox) printf(YELLOW "[!] Modulo saltado: Análisis de Red no disponible en Deadbox.\n" RESET);
-                else analizar_red();
+                if (ctx.modo_deadbox) printf(YELLOW "[!] Modulo saltado: Análisis de Red no disponible en Deadbox.\n" RESET);
+                else analizar_red(&ctx);
                 break;
             case 'm':
-                if (modo_deadbox) printf(YELLOW "[!] Modulo saltado: Análisis de Memoria no disponible en Deadbox.\n" RESET);
-                else analizar_memoria();
+                if (ctx.modo_deadbox) printf(YELLOW "[!] Modulo saltado: Análisis de Memoria no disponible en Deadbox.\n" RESET);
+                else analizar_memoria(&ctx);
                 break;
             case 'c':
-                if (modo_deadbox) printf(YELLOW "[!] Modulo saltado: Análisis de Capacidades no disponible en Deadbox.\n" RESET);
-                else analizar_capacidades();
+                if (ctx.modo_deadbox) printf(YELLOW "[!] Modulo saltado: Análisis de Capacidades no disponible en Deadbox.\n" RESET);
+                else analizar_capacidades(&ctx);
                 break;
             case 'k':
-                if (modo_deadbox) {
-                    if (!modo_json) printf(YELLOW "[!] Modulo saltado: Análisis de Rootkits no disponible en Deadbox.\n" RESET);
-                } else analizar_rootkits();
+                if (ctx.modo_deadbox) {
+                    if (!ctx.modo_json) printf(YELLOW "[!] Modulo saltado: Análisis de Rootkits no disponible en Deadbox.\n" RESET);
+                } else analizar_rootkits(&ctx);
                 break;
             case 'j':
-                modo_json = 1;
-                json_report = cJSON_CreateObject();
-                cJSON_AddStringToObject(json_report, "tool", "ForensicXM");
+                ctx.modo_json = 1;
+                ctx.json_report = cJSON_CreateObject();
+                cJSON_AddStringToObject(ctx.json_report, "tool", "ForensicXM");
                 break;
             case 'd':
                 if (optarg) {
-                    modo_deadbox = 1;
-                    strncpy(root_dir, optarg, sizeof(root_dir) - 1);
+                    ctx.modo_deadbox = 1;
+                    strncpy(ctx.root_dir, optarg, sizeof(ctx.root_dir) - 1);
                     // Eliminar barra final si la hay para evitar dobles barras
-                    int len = strlen(root_dir);
-                    if (len > 0 && root_dir[len-1] == '/') {
-                        root_dir[len-1] = '\0';
+                    int len = strlen(ctx.root_dir);
+                    if (len > 0 && ctx.root_dir[len-1] == '/') {
+                        ctx.root_dir[len-1] = '\0';
                     }
-                    printf(GREEN "[+] Modo Deadbox Activado. Raíz: %s\n" RESET, root_dir);
+                    printf(GREEN "[+] Modo Deadbox Activado. Raíz: %s\n" RESET, ctx.root_dir);
                 }
                 break;
             case 'i':
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 'r':
                 if (optarg) {
-                    generar_reporte_completo(optarg);
+                    generar_reporte_completo(optarg, &ctx);
                 } else {
                     printf("Debe especificar un nombre de archivo con -r <nombre>\n");
                 }
@@ -109,11 +109,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Al finalizar, si estamos en modo JSON, imprimimos el objeto maestro
-    if (modo_json && json_report) {
-        char *json_string = cJSON_Print(json_report);
+    if (ctx.modo_json && ctx.json_report) {
+        char *json_string = cJSON_Print(ctx.json_report);
         printf("%s\n", json_string);
         free(json_string);
-        cJSON_Delete(json_report);
+        cJSON_Delete(ctx.json_report);
     }
 
     return 0;

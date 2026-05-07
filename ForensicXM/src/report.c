@@ -51,7 +51,7 @@ void calcular_sha256_archivo(const char *ruta) {
     printf("  %s\n", ruta);
 }
 
-void generar_reporte_completo(const char *nombre_archivo) {
+void generar_reporte_completo(const char *nombre_archivo, ForensicContext *ctx) {
     // Guardamos el stdout original (File Descriptor 1) para restaurarlo después
     int saved_stdout = dup(STDOUT_FILENO);
     FILE *fp = fopen(nombre_archivo, "w");
@@ -74,16 +74,16 @@ void generar_reporte_completo(const char *nombre_archivo) {
     printf("Fecha del Análisis: %s", ctime(&now));
     
     // Ejecutamos todos los módulos definidos en la teoría
-    identificar_sistema();    // Tema 3
-    analizar_usuarios();      // Tema 4
-    analizar_persistencia();  // Tema 6
-    analizar_logs();          // Tema 4
-    analizar_logins_binarios(); // Tema 4
-    if (!modo_deadbox) {
-        analizar_red();             // Tema 6 & 7
-        analizar_memoria();         // Tema 6 (Malware volatile)
-        analizar_rootkits();        // Tema 6 (LKM Rootkits)
-        analizar_capacidades();     // Tema 4 (Privilegios/Caps)
+    identificar_sistema(ctx);    // Tema 3
+    analizar_usuarios(ctx);      // Tema 4
+    analizar_persistencia(ctx);  // Tema 6
+    analizar_logs(ctx);          // Tema 4
+    analizar_logins_binarios(ctx); // Tema 4
+    if (!ctx->modo_deadbox) {
+        analizar_red(ctx);             // Tema 6 & 7
+        analizar_memoria(ctx);         // Tema 6 (Malware volatile)
+        analizar_rootkits(ctx);        // Tema 6 (LKM Rootkits)
+        analizar_capacidades(ctx);     // Tema 4 (Privilegios/Caps)
     } else {
         printf("\n============================================================\n");
         printf("        MODO DEADBOX: Análisis de Red y Memoria omitidos\n");

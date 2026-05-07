@@ -2,9 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h> // Para checkear privilegios
+#include <limits.h>
 #include "forensics.h"
 
-void determinar_seguridad_hash(char *hash) {
+/**
+ * @brief Analiza el formato de un hash de contraseña y determina su nivel de seguridad.
+ * @param hash Cadena de texto con el hash extraído de /etc/shadow.
+ */
+static void determinar_seguridad_hash(char *hash) {
     if (hash[0] == '!') printf(" [Cuenta Bloqueada]");
     else if (hash[0] == '*') printf(" [Sin Password]");
     else if (strncmp(hash, "$y$", 3) == 0) printf(" (Hash: " GREEN "Yescrypt - Alta" RESET ")");
@@ -13,10 +18,10 @@ void determinar_seguridad_hash(char *hash) {
     else printf(" (Hash: Desconocido)");
 }
 
-void analizar_usuarios() {
+void analizar_usuarios(ForensicContext *ctx) {
     FILE *fp_pass, *fp_shad;
     char linea[512], linea_shad[1024];
-    char usuario[64], pass_field[1024];
+    char usuario[64];
     int uid;
 
     printf("\n--- [" GREEN "Análisis Forense de Usuarios" RESET "] ---\n");
@@ -25,8 +30,8 @@ void analizar_usuarios() {
         printf(RED "[!] Advertencia: Ejecuta con SUDO para analizar contraseñas (/etc/shadow)" RESET "\n");
     }
 
-    char path_pass[1024];
-    snprintf(path_pass, sizeof(path_pass), "%s/etc/passwd", root_dir);
+    char path_pass[PATH_MAX];
+    snprintf(path_pass, sizeof(path_pass), "%s/etc/passwd", ctx->root_dir);
 
     fp_pass = fopen(path_pass, "r");
     if (!fp_pass) return;
@@ -38,8 +43,8 @@ void analizar_usuarios() {
         if (sscanf(linea, "%[^:]:%*[^:]:%d", usuario, &uid) == 2) {
             printf("%-15s %-5d", usuario, uid);
 
-            char path_shad[1024];
-            snprintf(path_shad, sizeof(path_shad), "%s/etc/shadow", root_dir);
+            char path_shad[PATH_MAX];
+            snprintf(path_shad, sizeof(path_shad), "%s/etc/shadow", ctx->root_dir);
             // Intentamos buscar su hash en shadow (Tema 4)
             fp_shad = fopen(path_shad, "r");
             if (fp_shad) {

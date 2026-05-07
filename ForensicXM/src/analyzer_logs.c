@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 #include "forensics.h"
 
-void analizar_logs() {
+void analizar_logs(ForensicContext *ctx) {
     FILE *fp;
     char linea[1024];
     int fallos = 0;
@@ -11,19 +12,19 @@ void analizar_logs() {
     printf("\n--- [" GREEN "Análisis de Logs de Autenticación" RESET "] ---\n");
     printf("[+] Buscando anomalías en /var/log/auth.log...\n");
 
-    char path[1024];
-    snprintf(path, sizeof(path), "%s/var/log/auth.log", root_dir);
+    char path[PATH_MAX];
+    snprintf(path, sizeof(path), "%s/var/log/auth.log", ctx->root_dir);
 
     // Intentamos auth.log (Debian/Ubuntu)
-    if (access(path, F_OK) != 0) {
-        // Fallback a secure (RHEL/CentOS/Fedora)
-        snprintf(path, sizeof(path), "%s/var/log/secure", root_dir);
-    }
-
-    // Abrimos el log activo (Requiere sudo generalmente) 
     fp = fopen(path, "r");
     if (fp == NULL) {
-        printf(RED "    [-] Error al abrir logs de autenticación en %s (¿Has usado sudo?)\n" RESET, path);
+        // Fallback a secure (RHEL/CentOS/Fedora)
+        snprintf(path, sizeof(path), "%s/var/log/secure", ctx->root_dir);
+        fp = fopen(path, "r");
+    }
+
+    if (fp == NULL) {
+        printf(RED "    [-] Error al abrir logs de autenticación (¿Has usado sudo?)\n" RESET);
         return;
     }
 

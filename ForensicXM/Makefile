@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I./include
+CFLAGS=-I./include -Wall -Wextra -O2 -D_FORTIFY_SOURCE=2 -fstack-protector-strong
 SRC=src/main.c src/analyzer_sys.c src/analyzer_users.c src/persistence.c src/analyzer_logs.c src/analyzer_bin.c src/analyzer_integrity.c src/report.c src/analyzer_net.c src/analyzer_memory.c src/analyzer_rootkit.c src/analyzer_caps.c src/cJSON.c
 OBJ=$(SRC:.c=.o)
 BIN=bin/forensicXM
