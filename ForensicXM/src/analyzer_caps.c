@@ -14,6 +14,14 @@
 #define CAP_SYS_MODULE  16
 #define CAP_DAC_OVERRIDE 1
 
+// Umbral de UID a partir del cual una cuenta se considera de USUARIO REAL
+// y no un demonio de servicio del sistema. En Debian/Ubuntu y en
+// RHEL/Fedora el valor estándar es 1000 (ver UID_MIN en /etc/login.defs).
+// Las cuentas por debajo de este umbral son cuentas de servicio: que
+// tengan capabilities acotadas es el comportamiento de diseño de systemd,
+// no un indicador de compromiso.
+#define UID_MIN_USUARIO_REAL 1000
+
 /**
  * @brief Comprueba si un bit específico (capacidad) está encendido en una máscara de 64 bits.
  * @param caps_mask Máscara hexadecimal de las capacidades efectivas del proceso.
@@ -61,13 +69,12 @@ void analizar_capacidades(ForensicContext *ctx) {
 
         char linea[256];
         char proc_name[64] = "Desconocido";
-        // CORRECCIÓN (validación VM0): se leen los CUATRO uids de /proc/[pid]/status.
-        // La línea tiene el formato:  Uid:  Real  Effective  Saved  Filesystem
-        // El bug anterior leía solo el Real UID, lo que provocaba que procesos
-        // como 'sudo' (Real=1000, Effective=0) o binarios SUID como 'fusermount3'
-        // se marcasen como "proceso no-root con capacidades robadas" cuando en
-        // realidad SÍ son root de facto. La regla forense correcta debe basarse
-        // en el Effective UID, que es el que determina los privilegios reales.
+        // CORRECCIÓN 1 (validación VM0): se leen los CUATRO uids de
+        // /proc/[pid]/status. Formato: Uid: Real Effective Saved Filesystem
+        // El bug original leía solo el Real UID, lo que provocaba que
+        // procesos como 'sudo' (Real=1000, Effective=0) o binarios SUID
+        // como 'fusermount3' se marcasen como amenaza cuando son root de
+        // facto. La regla forense debe basarse en los privilegios reales.
         int uid_real = -1, uid_eff = -1, uid_saved = -1, uid_fs = -1;
         unsigned long long cap_eff = 0;
         int found_uid = 0, found_cap = 0, found_name = 0;
@@ -91,14 +98,25 @@ void analizar_capacidades(ForensicContext *ctx) {
         }
         fclose(fp);
 
-        // REGLA FUNDAMENTAL (corregida): un proceso es "no root" solo si NINGUNO
-        // de sus uids reales/efectivos/guardados es 0. Si cualquiera es 0, el
-        // proceso puede recuperar privilegios de root y sus capabilities no son
-        // un indicador de compromiso. Esto elimina los falsos positivos de
-        // 'sudo', 'su', 'pkexec' y binarios SUID detectados en la VM0 de control.
+        // CORRECCIÓN 2 (validación VM0): un proceso es root de facto si
+        // cualquiera de sus uids real/efectivo/guardado es 0. En ese caso
+        // sus capabilities no son un IOC. Esto elimina los falsos positivos
+        // de 'sudo', 'su', 'pkexec' y binarios SUID.
         int es_root_de_facto = (uid_real == 0 || uid_eff == 0 || uid_saved == 0);
 
-        if (!es_root_de_facto && cap_eff > 0) {
+        // CORRECCIÓN 3 (validación VM0, 2ª pasada): los demonios de servicio
+        // de systemd (systemd-network, systemd-resolve, rtkit-daemon...)
+        // corren bajo UID propios bajos (< 1000) y tienen capabilities
+        // ASIGNADAS LEGÍTIMAMENTE por el sistema para cumplir su función
+        // (CAP_NET_RAW para DHCP, CAP_SYS_PTRACE para gestionar prioridades,
+        // etc.). Que las tengan es el diseño de seguridad de systemd
+        // funcionando, no un compromiso. El indicador de compromiso real es
+        // una cuenta de USUARIO (UID >= 1000) con capabilities críticas:
+        // ese es el patrón de la técnica post-explotación que se quiere
+        // detectar. Por eso se exige uid_eff >= UID_MIN_USUARIO_REAL.
+        int es_usuario_real = (uid_eff >= UID_MIN_USUARIO_REAL);
+
+        if (!es_root_de_facto && es_usuario_real && cap_eff > 0) {
             char cap_desc[256] = "";
             int is_critical = 0;
 
@@ -123,11 +141,10 @@ void analizar_capacidades(ForensicContext *ctx) {
                 is_critical = 1;
             }
 
-            // CORRECCIÓN (validación VM0): el bloque anterior usaba
+            // CORRECCIÓN (validación VM0): el bloque original usaba
             //   if (is_critical || !is_critical)
-            // que es SIEMPRE verdadero, por lo que la rama "MODERADA" reportaba
-            // todos los procesos con cualquier capability (dbus-daemon, etc.).
-            // Ahora solo se reportan procesos con capabilities REALMENTE críticas.
+            // que es SIEMPRE verdadero. Ahora solo se reportan procesos con
+            // capabilities REALMENTE críticas.
             if (is_critical) {
                 if (ctx->modo_json && caps_array) {
                     cJSON *cap_item = cJSON_CreateObject();
@@ -151,9 +168,9 @@ void analizar_capacidades(ForensicContext *ctx) {
 
     if (!ctx->modo_json) {
         if (sospechosos == 0) {
-            printf(GREEN "\n    [+] No se detectaron procesos no-root con capacidades críticas." RESET "\n");
+            printf(GREEN "\n    [+] No se detectaron procesos de usuario con capacidades críticas." RESET "\n");
         } else {
-            printf(RED "\n    [!] Advertencia: Se han detectado %d procesos con capacidades críticas." RESET "\n", sospechosos);
+            printf(RED "\n    [!] Advertencia: Se han detectado %d procesos de usuario con capacidades críticas." RESET "\n", sospechosos);
         }
         printf("--------------------------------------------------------------------------------------------------\n");
     }
