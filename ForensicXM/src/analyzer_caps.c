@@ -61,7 +61,14 @@ void analizar_capacidades(ForensicContext *ctx) {
 
         char linea[256];
         char proc_name[64] = "Desconocido";
-        int uid = -1;
+        // CORRECCIÓN (validación VM0): se leen los CUATRO uids de /proc/[pid]/status.
+        // La línea tiene el formato:  Uid:  Real  Effective  Saved  Filesystem
+        // El bug anterior leía solo el Real UID, lo que provocaba que procesos
+        // como 'sudo' (Real=1000, Effective=0) o binarios SUID como 'fusermount3'
+        // se marcasen como "proceso no-root con capacidades robadas" cuando en
+        // realidad SÍ son root de facto. La regla forense correcta debe basarse
+        // en el Effective UID, que es el que determina los privilegios reales.
+        int uid_real = -1, uid_eff = -1, uid_saved = -1, uid_fs = -1;
         unsigned long long cap_eff = 0;
         int found_uid = 0, found_cap = 0, found_name = 0;
 
@@ -70,8 +77,9 @@ void analizar_capacidades(ForensicContext *ctx) {
                 sscanf(linea, "Name:\t%63s", proc_name);
                 found_name = 1;
             } else if (strncmp(linea, "Uid:\t", 5) == 0) {
-                // El formato suele ser: Uid:    Real    Effective       Saved   Filesystem
-                sscanf(linea, "Uid:\t%d", &uid);
+                // Leemos los 4 campos: Real, Effective, Saved, Filesystem
+                sscanf(linea, "Uid:\t%d\t%d\t%d\t%d",
+                       &uid_real, &uid_eff, &uid_saved, &uid_fs);
                 found_uid = 1;
             } else if (strncmp(linea, "CapEff:\t", 8) == 0) {
                 // Formato: CapEff: 0000000000000000
@@ -83,8 +91,14 @@ void analizar_capacidades(ForensicContext *ctx) {
         }
         fclose(fp);
 
-        // REGLA FUNDAMENTAL: Buscamos Procesos que NO son ROOT pero que Tienen Capacidades
-        if (uid != 0 && cap_eff > 0) {
+        // REGLA FUNDAMENTAL (corregida): un proceso es "no root" solo si NINGUNO
+        // de sus uids reales/efectivos/guardados es 0. Si cualquiera es 0, el
+        // proceso puede recuperar privilegios de root y sus capabilities no son
+        // un indicador de compromiso. Esto elimina los falsos positivos de
+        // 'sudo', 'su', 'pkexec' y binarios SUID detectados en la VM0 de control.
+        int es_root_de_facto = (uid_real == 0 || uid_eff == 0 || uid_saved == 0);
+
+        if (!es_root_de_facto && cap_eff > 0) {
             char cap_desc[256] = "";
             int is_critical = 0;
 
@@ -109,29 +123,24 @@ void analizar_capacidades(ForensicContext *ctx) {
                 is_critical = 1;
             }
 
-            if (is_critical || !is_critical) {
+            // CORRECCIÓN (validación VM0): el bloque anterior usaba
+            //   if (is_critical || !is_critical)
+            // que es SIEMPRE verdadero, por lo que la rama "MODERADA" reportaba
+            // todos los procesos con cualquier capability (dbus-daemon, etc.).
+            // Ahora solo se reportan procesos con capabilities REALMENTE críticas.
+            if (is_critical) {
                 if (ctx->modo_json && caps_array) {
                     cJSON *cap_item = cJSON_CreateObject();
                     cJSON_AddNumberToObject(cap_item, "pid", atoi(entry->d_name));
-                    cJSON_AddNumberToObject(cap_item, "uid", uid);
+                    cJSON_AddNumberToObject(cap_item, "uid_real", uid_real);
+                    cJSON_AddNumberToObject(cap_item, "uid_effective", uid_eff);
                     cJSON_AddStringToObject(cap_item, "name", proc_name);
-                    
-                    if (is_critical) {
-                        cJSON_AddStringToObject(cap_item, "severity", "HIGH");
-                        cJSON_AddStringToObject(cap_item, "capabilities", cap_desc);
-                    } else {
-                        char hex_caps[32];
-                        snprintf(hex_caps, sizeof(hex_caps), "%llx", cap_eff);
-                        cJSON_AddStringToObject(cap_item, "severity", "MODERATE");
-                        cJSON_AddStringToObject(cap_item, "capabilities", hex_caps);
-                    }
+                    cJSON_AddStringToObject(cap_item, "severity", "HIGH");
+                    cJSON_AddStringToObject(cap_item, "capabilities", cap_desc);
                     cJSON_AddItemToArray(caps_array, cap_item);
                 } else {
-                    if (is_critical) {
-                        printf(RED "%-8s %-6d %-20s %-15s %s" RESET "\n", entry->d_name, uid, proc_name, "ALTA", cap_desc);
-                    } else {
-                        printf(YELLOW "%-8s %-6d %-20s %-15s %llx (bits encendidos)" RESET "\n", entry->d_name, uid, proc_name, "MODERADA", cap_eff);
-                    }
+                    printf(RED "%-8s %-6d %-20s %-15s %s" RESET "\n",
+                           entry->d_name, uid_eff, proc_name, "ALTA", cap_desc);
                 }
                 sospechosos++;
             }
