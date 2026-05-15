@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h> // Para checkear privilegios
+#include <unistd.h>
 #include <limits.h>
 #include "forensics.h"
 
@@ -45,19 +45,48 @@ void analizar_usuarios(ForensicContext *ctx) {
 
             char path_shad[PATH_MAX];
             snprintf(path_shad, sizeof(path_shad), "%s/etc/shadow", ctx->root_dir);
-            // Intentamos buscar su hash en shadow (Tema 4)
             fp_shad = fopen(path_shad, "r");
             if (fp_shad) {
                 int encontrado = 0;
                 while (fgets(linea_shad, sizeof(linea_shad), fp_shad)) {
-                    char user_shad[64], hash_shad[1024];
-                    if (sscanf(linea_shad, "%[^:]:%[^:]", user_shad, hash_shad) == 2) {
-                        if (strcmp(usuario, user_shad) == 0) {
-                            determinar_seguridad_hash(hash_shad);
-                            encontrado = 1;
-                            break;
-                        }
+                    // CORRECCIÓN (validación VM1): el parser original usaba
+                    //   sscanf(linea, "%[^:]:%[^:]", user, hash)
+                    // que devuelve 1 (no 2) cuando el campo de hash está vacío,
+                    // descartando la línea. Esto provocaba que cuentas SIN
+                    // contraseña ('usuario::...') se reportaran como "no en
+                    // /etc/shadow" en vez de marcarse como amenaza.
+                    //
+                    // Ahora extraemos el nombre de usuario y el hash a mano,
+                    // distinguiendo explícitamente el caso de hash vacío.
+                    char *primer_colon  = strchr(linea_shad, ':');
+                    if (!primer_colon) continue;
+                    char *segundo_colon = strchr(primer_colon + 1, ':');
+                    if (!segundo_colon) continue;
+
+                    // Extraemos el nombre del usuario (hasta el primer ':')
+                    char user_shad[64];
+                    size_t user_len = primer_colon - linea_shad;
+                    if (user_len >= sizeof(user_shad)) continue;
+                    strncpy(user_shad, linea_shad, user_len);
+                    user_shad[user_len] = '\0';
+
+                    if (strcmp(usuario, user_shad) != 0) continue;
+
+                    // El campo de hash va del primer al segundo ':'
+                    size_t hash_len = segundo_colon - (primer_colon + 1);
+                    if (hash_len == 0) {
+                        // Hash VACÍO: cuenta sin contraseña, autenticación
+                        // sin password requerida. Indicador de compromiso.
+                        printf(" [" RED "Sin Password (campo vacío)" RESET "]");
+                    } else {
+                        char hash_shad[1024];
+                        if (hash_len >= sizeof(hash_shad)) hash_len = sizeof(hash_shad) - 1;
+                        strncpy(hash_shad, primer_colon + 1, hash_len);
+                        hash_shad[hash_len] = '\0';
+                        determinar_seguridad_hash(hash_shad);
                     }
+                    encontrado = 1;
+                    break;
                 }
                 fclose(fp_shad);
                 if (!encontrado) printf(" [No en /etc/shadow]");
