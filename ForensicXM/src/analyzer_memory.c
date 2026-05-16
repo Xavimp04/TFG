@@ -7,24 +7,28 @@
 #include "forensics.h"
 
 /*
- * NOTA DE VALIDACIÓN (VM0 de control):
- * El análisis de la VM0 limpia reveló que numerosos procesos legítimos de
- * escritorio (gnome-shell, gjs, nautilus, gnome-terminal...) presentan
- * regiones de memoria RWX. Esto NO es malware: los motores con compilación
- * "Just-In-Time" (el intérprete JavaScript de GNOME, navegadores, etc.)
- * necesitan páginas de memoria que sean escribibles y ejecutables a la vez
- * para generar y correr código en caliente.
+ * NOTA DE VALIDACIÓN (VM0 + VM2):
  *
- * Por tanto, una región RWX por sí sola NO es un Indicador de Compromiso
- * fiable. Para reducir los falsos positivos sin perder capacidad de
- * detección, este módulo ahora ESTRATIFICA la severidad:
+ * El análisis de la VM0 reveló que numerosos procesos legítimos de
+ * escritorio (gnome-shell, gjs, nautilus...) presentan regiones de
+ * memoria RWX por uso de compilación Just-In-Time. Para no descartar
+ * la detección, este módulo estratifica la severidad en dos niveles:
  *
- *   - CRÍTICO: el proceso tiene región RWX *Y ADEMÁS* corre desde un
- *              binario borrado. Esta combinación es muy característica de
- *              malware (se inyecta código y se elimina el rastro en disco).
- *   - SOSPECHA BAJA: el proceso tiene región RWX pero su binario existe
- *              en disco. Probablemente JIT legítimo; se informa para
- *              revisión manual pero sin marcarlo como alerta crítica.
+ *   - CRÍTICO: RWX + binario borrado. Combinación característica de
+ *              malware inyectado en memoria.
+ *   - SOSPECHA BAJA: RWX sin borrado. Probable JIT legítimo;
+ *              revisión manual sin alerta crítica.
+ *
+ * Además, el análisis de la VM2 destapó un defecto adicional en la
+ * detección de regiones RWX: el original usaba strstr(line, "rwx"),
+ * que matchea la subcadena en cualquier parte de la línea, incluido
+ * el nombre del fichero mapeado. Cuando un binario llamado p.ej.
+ * "rwx_proc" se mapea en memoria, su mapeo del segmento de código
+ * (con permisos r--p) contiene la cadena "rwx" en el campo path y
+ * generaba un falso emparejamiento, distorsionando el detalle
+ * mostrado en el reporte. La corrección extrae explícitamente el
+ * campo de permisos (segundo campo del formato de /proc/[pid]/maps)
+ * y compara exactamente con "rwx".
  */
 
 // Comprueba si un proceso corre desde un binario borrado.
@@ -48,9 +52,16 @@ int check_deleted_binary(const char *pid, const char *proc_name) {
     return 0;
 }
 
-// Comprueba si un proceso tiene alguna región de memoria RWX.
+// Comprueba si un proceso tiene alguna región de memoria con permisos
+// EXACTAMENTE "rwx" (lectura + escritura + ejecución).
 // Devuelve 1 si encuentra al menos una, 0 si no.
-// Solo detecta; la decisión de severidad se toma en analizar_memoria().
+//
+// CORRECCIÓN VM2: el formato de /proc/[pid]/maps es
+//     address           perms offset  dev   inode  pathname
+//     7f1234567000-...  rwxp  00000000 fd:01 12345  /ruta/al/binario
+// El campo de permisos siempre es el segundo, separado por espacios.
+// Se parsea posicionalmente para evitar falsos emparejamientos cuando
+// la subcadena "rwx" aparece en el nombre del binario (ej: rwx_proc).
 int check_rwx_memory(const char *pid, char *detalle_out, size_t detalle_len) {
     char path[256];
     char line[1024];
@@ -62,9 +73,16 @@ int check_rwx_memory(const char *pid, char *detalle_out, size_t detalle_len) {
 
     if (fp) {
         while (fgets(line, sizeof(line), fp)) {
-            // Formato maps: address perms offset dev inode pathname
-            // Los permisos son el segundo campo, ej: "rwxp"
-            if (strstr(line, "rwx")) {
+            // Extraemos el campo de permisos: tras el primer espacio,
+            // los siguientes 4 caracteres (p.ej. "rwxp" o "r-xp").
+            char *sp = strchr(line, ' ');
+            if (!sp || strlen(sp) < 5) continue;
+
+            // perms apunta a 4 caracteres exactos
+            char *perms = sp + 1;
+
+            // Necesitamos r, w y x simultáneos en sus posiciones
+            if (perms[0] == 'r' && perms[1] == 'w' && perms[2] == 'x') {
                 encontrada = 1;
                 if (detalle_out) {
                     strncpy(detalle_out, line, detalle_len - 1);
@@ -79,12 +97,12 @@ int check_rwx_memory(const char *pid, char *detalle_out, size_t detalle_len) {
 }
 
 void analizar_memoria(ForensicContext *ctx) {
-    (void)ctx; // Parámetro de interfaz no usado porque lee directamente de /proc
+    (void)ctx;
     DIR *dir;
     struct dirent *entry;
 
     printf("\n--- [" GREEN "Análisis de Memoria RAM (Procesos)" RESET "] ---\n");
-    
+
     if (geteuid() != 0) {
         printf(YELLOW "[!] Nota: Ejecuta con SUDO para analizar todos los procesos.\n" RESET);
     }
@@ -96,17 +114,15 @@ void analizar_memoria(ForensicContext *ctx) {
     }
 
     int count_checked = 0;
-    int count_critico = 0;     // RWX + binario borrado
-    int count_sospecha = 0;    // RWX a secas (posible JIT)
+    int count_critico = 0;
+    int count_sospecha = 0;
 
     while ((entry = readdir(dir)) != NULL) {
-        // Solo PIDs numéricos
         if (!isdigit(entry->d_name[0])) continue;
 
         char path_comm[PATH_MAX];
         char proc_name[256] = "Desconocido";
-        
-        // Obtener nombre del proceso
+
         snprintf(path_comm, sizeof(path_comm), "/proc/%s/comm", entry->d_name);
         FILE *fp_comm = fopen(path_comm, "r");
         if (fp_comm) {
@@ -116,29 +132,23 @@ void analizar_memoria(ForensicContext *ctx) {
             fclose(fp_comm);
         }
 
-        // 1. ¿Corre desde un binario borrado?
         int binario_borrado = check_deleted_binary(entry->d_name, proc_name);
 
-        // 2. ¿Tiene alguna región de memoria RWX?
         char detalle_rwx[512] = "";
         int tiene_rwx = check_rwx_memory(entry->d_name, detalle_rwx, sizeof(detalle_rwx));
 
-        // 3. Decisión de severidad ESTRATIFICADA
         if (tiene_rwx && binario_borrado) {
-            // Combinación altamente característica de malware inyectado
             printf(RED "    [!] ALERTA CRÍTICA: Proceso '%s' (PID: %s) combina memoria RWX con binario borrado." RESET "\n",
                    proc_name, entry->d_name);
             printf("        Detalle RWX: %s", detalle_rwx);
             count_critico++;
         } else if (tiene_rwx) {
-            // RWX a secas: probablemente JIT legítimo. Se informa con
-            // severidad baja para revisión manual, NO como alerta crítica.
             printf(YELLOW "    [*] Sospecha baja: Proceso '%s' (PID: %s) tiene región RWX (posible JIT legítimo, revisar)." RESET "\n",
                    proc_name, entry->d_name);
             printf("        Detalle: %s", detalle_rwx);
             count_sospecha++;
         }
-        
+
         count_checked++;
     }
 
