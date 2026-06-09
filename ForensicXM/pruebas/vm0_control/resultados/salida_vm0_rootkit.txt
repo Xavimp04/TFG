@@ -1,0 +1,5 @@
+
+--- [[32mAnálisis Avanzado: Detección de Rootkits LKM[0m] ---
+[+] Validando módulos cruzando /proc/modules con /sys/module/...
+[32m    [+] Análisis limpio. No se detectaron discrepancias de módulos.[0m
+------------------------------------------------------------

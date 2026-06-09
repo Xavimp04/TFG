@@ -1,0 +1,311 @@
+============================================================
+        REPORTE FORENSE GENERADO POR FORENSICXM
+============================================================
+Fecha del Análisis: Thu May 14 20:40:46 2026
+
+--- [[32mIdentificación del Sistema[0m] ---
+[+] Distribución detectada: "Ubuntu 24.04.4 LTS"
+[+] Información del Kernel: Linux version 6.8.0-111-generic (buildd@lcy02-amd64-088) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #111-Ubuntu SMP PREEMPT_DYNAMIC Sat Apr 11 23:16:02 UTC 2026
+------------------------------------------
+
+--- [[32mAnálisis Forense de Usuarios[0m] ---
+Usuario         UID   Info Seguridad      
+------------------------------------------------------------
+root            0     [Sin Password]
+daemon          1     [Sin Password]
+bin             2     [Sin Password]
+sys             3     [Sin Password]
+sync            4     [Sin Password]
+games           5     [Sin Password]
+man             6     [Sin Password]
+lp              7     [Sin Password]
+mail            8     [Sin Password]
+news            9     [Sin Password]
+uucp            10    [Sin Password]
+proxy           13    [Sin Password]
+www-data        33    [Sin Password]
+backup          34    [Sin Password]
+list            38    [Sin Password]
+irc             39    [Sin Password]
+_apt            42    [Sin Password]
+nobody          65534 [Sin Password]
+systemd-network 998   [Cuenta Bloqueada]
+systemd-timesync 997   [Cuenta Bloqueada]
+dhcpcd          100   [Cuenta Bloqueada]
+messagebus      101   [Cuenta Bloqueada]
+systemd-resolve 992   [Cuenta Bloqueada]
+pollinate       102   [Cuenta Bloqueada]
+polkitd         991   [Cuenta Bloqueada]
+syslog          103   [Cuenta Bloqueada]
+uuidd           104   [Cuenta Bloqueada]
+tcpdump         105   [Cuenta Bloqueada]
+tss             106   [Cuenta Bloqueada]
+landscape       107   [Cuenta Bloqueada]
+fwupd-refresh   989   [Cuenta Bloqueada]
+usbmux          108   [Cuenta Bloqueada]
+tfg             1000  (Hash: [32mSHA-512 - Alta[0m)
+sshd            109   [Cuenta Bloqueada]
+rtkit           110   [Cuenta Bloqueada]
+dnsmasq         999   [Cuenta Bloqueada]
+kernoops        111   [Cuenta Bloqueada]
+whoopsie        112   [Cuenta Bloqueada]
+systemd-oom     988   [Cuenta Bloqueada]
+avahi           113   [Cuenta Bloqueada]
+saned           114   [Cuenta Bloqueada]
+nm-openvpn      115   [Cuenta Bloqueada]
+colord          116   [Cuenta Bloqueada]
+sssd            117   [Cuenta Bloqueada]
+speech-dispatcher 118   [Cuenta Bloqueada]
+cups-pk-helper  119   [Cuenta Bloqueada]
+geoclue         120   [Cuenta Bloqueada]
+cups-browsed    121   [Cuenta Bloqueada]
+hplip           122   [Cuenta Bloqueada]
+gnome-remote-desktop 987   [Cuenta Bloqueada]
+gnome-initial-setup 123   [Cuenta Bloqueada]
+gdm             124   [Cuenta Bloqueada]
+vboxadd         996   [Cuenta Bloqueada]
+
+--- [[32mAnálisis de Persistencia y Contenido[0m] ---
+
+[+] Revisando Tareas Cron (Global) (/etc/cron.d)...
+    -> Analizando: anacron
+    -> Analizando: sysstat
+    -> Analizando: e2scrub_all
+
+[+] Revisando Tareas Cron (Usuarios) (/var/spool/cron/crontabs)...
+
+[+] Revisando Servicios Systemd (Global) (/etc/systemd/system)...
+    -> Analizando: dbus-org.bluez.service
+    -> Analizando: suspend-then-hibernate.target.wants
+    -> Analizando: mdmonitor.service.wants
+    -> Analizando: sleep.target.wants
+    -> Analizando: snap-thunderbird-1104.mount
+    -> Analizando: snap-core24-1587.mount
+    -> Analizando: sysinit.target.wants
+    -> Analizando: graphical.target.wants
+    -> Analizando: snap-firefox-8306.mount
+    -> Analizando: rescue.target.wants
+    -> Analizando: snap.mesa-2404.component-monitor.service
+    -> Analizando: dbus-org.freedesktop.ModemManager1.service
+    -> Analizando: emergency.target.wants
+    -> Analizando: bluetooth.target.wants
+    -> Analizando: dbus-org.freedesktop.nm-dispatcher.service
+    -> Analizando: dbus-fi.w1.wpa_supplicant1.service
+    -> Analizando: cloud-final.service.wants
+    -> Analizando: dbus-org.freedesktop.thermald.service
+    -> Analizando: final.target.wants
+    -> Analizando: dbus-org.freedesktop.resolve1.service
+    -> Analizando: hybrid-sleep.target.wants
+    -> Analizando: syslog.service
+    -> Analizando: iscsi.service
+    -> Analizando: snap-bare-5.mount
+    -> Analizando: sssd.service.wants
+    -> Analizando: ssh.service.requires
+    -> Analizando: dbus-org.freedesktop.oom1.service
+    -> Analizando: snap-gtk\x2dcommon\x2dthemes-1535.mount
+    -> Analizando: snap-mesa\x2d2404-1165.mount
+    -> Analizando: snap-snapd-26865.mount
+    -> Analizando: suspend.target.wants
+    -> Analizando: display-manager.service
+    -> Analizando: vmtoolsd.service
+    -> Analizando: display-manager.service.wants
+    -> Analizando: dbus-org.freedesktop.timesync1.service
+    -> Analizando: multi-user.target.wants
+    -> Analizando: oem-config.service.wants
+    -> Analizando: sockets.target.wants
+    -> Analizando: sysstat.service.wants
+    -> Analizando: dbus-org.freedesktop.Avahi.service
+    -> Analizando: timers.target.wants
+    -> Analizando: hibernate.target.wants
+    -> Analizando: cloud-init.target.wants
+    -> Analizando: network-online.target.wants
+    -> Analizando: open-vm-tools.service.requires
+    -> Analizando: getty.target.wants
+    -> Analizando: snapd.mounts.target.wants
+    -> Analizando: printer.target.wants
+    -> Analizando: paths.target.wants
+    -> Analizando: snap-gnome\x2d46\x2d2404-153.mount
+    -> Analizando: cloud-config.target.wants
+
+------------------------------------------------------------
+
+--- [[32mAnálisis de Logs de Autenticación[0m] ---
+[+] Buscando anomalías en /var/log/auth.log...
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:13:44.864663+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:13:57.804688+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:15:01.819156+00:00 vm0 CRON[1555]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:17:01.831168+00:00 vm0 CRON[3212]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:23:35.066425+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:27:21.007479+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:30:01.315283+00:00 vm0 CRON[4216]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:32:02.869666+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:33:20.103381+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:34:49.894126+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:35:01.328293+00:00 vm0 CRON[4878]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:35:09.989731+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:36:20.915149+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:36:25.226882+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T16:39:20.761579+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T17:52:56.741403+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T17:55:01.480458+00:00 vm0 CRON[2620]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T18:02:30.474719+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:19:50.608373+00:00 vm0 CRON[2908]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:20:06.128986+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:20:44.292711+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:20:50.017351+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:22:34.761996+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:23:47.609834+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:27:04.591413+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:27:31.458411+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:27:35.179574+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:30:01.705320+00:00 vm0 CRON[1672]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:33:52.098561+00:00 vm0 pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:35:01.745568+00:00 vm0 CRON[3049]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:38:17.100299+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:39:04.864521+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:38.972586+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.158015+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.201655+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.242058+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.281576+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.355570+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.482683+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:43:39.539142+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:45:01.764387+00:00 vm0 CRON[3556]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:50:01.440080+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:52:31.163872+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:52:41.452252+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:53:05.947636+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:53:14.536430+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:53:25.052521+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:53:33.838731+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:53:43.485708+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:53:55.284560+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:54:02.324016+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:54:08.953156+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T19:55:01.779717+00:00 vm0 CRON[3765]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:05:01.794831+00:00 vm0 CRON[3845]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:15:01.810996+00:00 vm0 CRON[3911]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:17:01.826984+00:00 vm0 CRON[3928]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:25:01.865295+00:00 vm0 CRON[3985]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:46.377978+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:46.969504+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:47.026902+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:47.069918+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:47.123122+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:48.046325+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:48.088449+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:29:48.134022+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:01.882607+00:00 vm0 CRON[5356]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:34.373843+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:38.139356+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:43.503451+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:50.287069+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:53.130167+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:30:57.700455+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:31:01.426626+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:31:05.215027+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:35:01.896034+00:00 vm0 CRON[5555]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.488591+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.663180+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.704466+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.742637+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.783264+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.855259+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:36.978976+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:37.035841+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.090347+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.287860+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.323174+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.370728+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.418405+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.627331+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.679326+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:38:59.731920+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m 2026-05-14T20:40:46.811777+00:00 vm0 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [+] No se detectaron fallos de autenticación recientes.[0m
+------------------------------------------------------------
+
+--- [[32mHistorial de Logins Binarios (/var/log/wtmp)[0m] ---
+Usuario         Terminal        Host                 Fecha/Hora          
+--------------------------------------------------------------------------------
+tfg             seat0           login screen         Thu May 14 16:26:17 2026
+tfg             tty2            tty2                 Thu May 14 16:26:17 2026
+tfg             seat0           login screen         Thu May 14 17:51:49 2026
+tfg             tty2            tty2                 Thu May 14 17:51:49 2026
+tfg             seat0           login screen         Thu May 14 19:26:24 2026
+tfg             tty2            tty2                 Thu May 14 19:26:24 2026
+tfg             seat0           login screen         Thu May 14 19:32:44 2026
+tfg             tty2            tty2                 Thu May 14 19:32:44 2026
+--------------------------------------------------------------------------------
+
+--- [[32mAnálisis de Conexiones de Red (Sin netstat)[0m] ---
+Local Address          Remote Address         State        Inode      PID      Program        
+--------------------------------------------------------------------------------------------------
+0.0.0.0:22             0.0.0.0:0              LISTEN       8440       1        systemd        
+127.0.0.1:631          0.0.0.0:0              LISTEN       10821      1285     cupsd          
+127.0.0.54:53          0.0.0.0:0              LISTEN       7538       624      systemd-resolve
+127.0.0.53:53          0.0.0.0:0              LISTEN       7536       624      systemd-resolve
+[32m10.0.2.15:33606        140.82.112.25:443      ESTABLISHED  31536      4075     firefox        [0m
+10.0.2.15:52130        34.120.208.123:443     TIME_WAIT    0          -        -              
+[32m10.0.2.15:46990        34.107.243.93:443      ESTABLISHED  28493      4075     firefox        [0m
+--------------------------------------------------------------------------------------------------
+
+--- [[32mAnálisis de Memoria RAM (Procesos)[0m] ---
+[33m    [*] Sospecha baja: Proceso 'unattended-upgr' (PID: 1296) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 778958cdc000-778958cdd000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-session-b' (PID: 1940) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 72f1c7861000-72f1c7871000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-session-b' (PID: 2026) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7b174dee0000-7b174def0000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-shell' (PID: 2060) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7fc233e00000-7fc234800000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gjs' (PID: 2162) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 70626b721000-70626b722000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gjs' (PID: 2671) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7bbfc8ba9000-7bbfc8baa000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'xdg-desktop-por' (PID: 2699) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7588d1400000-7588d1e00000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gjs' (PID: 4033) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 717226955000-717226956000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'WebExtensions' (PID: 4227) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 2a545f032000-2a545f042000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Privileged Cont' (PID: 4283) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 33db928db000-33db928eb000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Isolated Web Co' (PID: 4467) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 21be0db8d000-21be0db9d000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Web Content' (PID: 4853) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 3a26e4317000-3a26e4327000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Web Content' (PID: 4856) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 72b208ba000-72b208da000 rwxp 00000000 00:00 0                            [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Web Content' (PID: 4862) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 2affbec29000-2affbec39000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'nautilus' (PID: 5688) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7189b4c00000-7189b5600000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-terminal-' (PID: 5715) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 782b68117000-782b68127000 rwxp 00000000 00:00 0 
+[+] Se han analizado 212 procesos en busca de anomalías en memoria.
+    -> 0 con severidad CRÍTICA (RWX + binario borrado)
+    -> 16 con sospecha baja (RWX aislado, posible JIT)
+[32m    [+] No se detectaron combinaciones críticas en memoria.[0m
+------------------------------------------------------------
+
+--- [[32mAnálisis Avanzado: Detección de Rootkits LKM[0m] ---
+[+] Validando módulos cruzando /proc/modules con /sys/module/...
+[32m    [+] Análisis limpio. No se detectaron discrepancias de módulos.[0m
+------------------------------------------------------------
+
+--- [[32mAnálisis de Privilegios: Linux Capabilities[0m] ---
+PID      UID    Nombre               Peligrosidad    Capacidades Críticas Detectadas
+--------------------------------------------------------------------------------------------------
+[31m592      998    systemd-network      ALTA            CAP_NET_RAW(sniffer) [0m
+[31m618      988    systemd-oomd         ALTA            CAP_DAC_OVERRIDE(leer_todo) [0m
+[31m624      992    systemd-resolve      ALTA            CAP_NET_RAW(sniffer) [0m
+[31m1436     110    rtkit-daemon         ALTA            CAP_SYS_PTRACE(inyectar) [0m
+[31m
+    [!] Advertencia: Se han detectado 4 procesos con capacidades críticas.[0m
+--------------------------------------------------------------------------------------------------
+
+============================================================
+        FIN DEL REPORTE - INTEGRIDAD DE LA PRUEBA
+============================================================

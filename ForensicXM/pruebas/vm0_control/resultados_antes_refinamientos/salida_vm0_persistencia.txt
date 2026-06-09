@@ -1,0 +1,64 @@
+
+--- [[32mAnálisis de Persistencia y Contenido[0m] ---
+
+[+] Revisando Tareas Cron (Global) (/etc/cron.d)...
+    -> Analizando: anacron
+    -> Analizando: sysstat
+    -> Analizando: e2scrub_all
+
+[+] Revisando Tareas Cron (Usuarios) (/var/spool/cron/crontabs)...
+
+[+] Revisando Servicios Systemd (Global) (/etc/systemd/system)...
+    -> Analizando: dbus-org.bluez.service
+    -> Analizando: suspend-then-hibernate.target.wants
+    -> Analizando: mdmonitor.service.wants
+    -> Analizando: sleep.target.wants
+    -> Analizando: snap-thunderbird-1104.mount
+    -> Analizando: snap-core24-1587.mount
+    -> Analizando: sysinit.target.wants
+    -> Analizando: graphical.target.wants
+    -> Analizando: snap-firefox-8306.mount
+    -> Analizando: rescue.target.wants
+    -> Analizando: snap.mesa-2404.component-monitor.service
+    -> Analizando: dbus-org.freedesktop.ModemManager1.service
+    -> Analizando: emergency.target.wants
+    -> Analizando: bluetooth.target.wants
+    -> Analizando: dbus-org.freedesktop.nm-dispatcher.service
+    -> Analizando: dbus-fi.w1.wpa_supplicant1.service
+    -> Analizando: cloud-final.service.wants
+    -> Analizando: dbus-org.freedesktop.thermald.service
+    -> Analizando: final.target.wants
+    -> Analizando: dbus-org.freedesktop.resolve1.service
+    -> Analizando: hybrid-sleep.target.wants
+    -> Analizando: syslog.service
+    -> Analizando: iscsi.service
+    -> Analizando: snap-bare-5.mount
+    -> Analizando: sssd.service.wants
+    -> Analizando: ssh.service.requires
+    -> Analizando: dbus-org.freedesktop.oom1.service
+    -> Analizando: snap-gtk\x2dcommon\x2dthemes-1535.mount
+    -> Analizando: snap-mesa\x2d2404-1165.mount
+    -> Analizando: snap-snapd-26865.mount
+    -> Analizando: suspend.target.wants
+    -> Analizando: display-manager.service
+    -> Analizando: vmtoolsd.service
+    -> Analizando: display-manager.service.wants
+    -> Analizando: dbus-org.freedesktop.timesync1.service
+    -> Analizando: multi-user.target.wants
+    -> Analizando: oem-config.service.wants
+    -> Analizando: sockets.target.wants
+    -> Analizando: sysstat.service.wants
+    -> Analizando: dbus-org.freedesktop.Avahi.service
+    -> Analizando: timers.target.wants
+    -> Analizando: hibernate.target.wants
+    -> Analizando: cloud-init.target.wants
+    -> Analizando: network-online.target.wants
+    -> Analizando: open-vm-tools.service.requires
+    -> Analizando: getty.target.wants
+    -> Analizando: snapd.mounts.target.wants
+    -> Analizando: printer.target.wants
+    -> Analizando: paths.target.wants
+    -> Analizando: snap-gnome\x2d46\x2d2404-153.mount
+    -> Analizando: cloud-config.target.wants
+
+------------------------------------------------------------

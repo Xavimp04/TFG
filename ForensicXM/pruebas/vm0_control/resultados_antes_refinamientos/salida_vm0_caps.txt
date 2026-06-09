@@ -1,0 +1,18 @@
+
+--- [[32mAnálisis de Privilegios: Linux Capabilities[0m] ---
+PID      UID    Nombre               Peligrosidad    Capacidades Críticas Detectadas
+--------------------------------------------------------------------------------------------------
+[31m592      998    systemd-network      ALTA            CAP_NET_RAW(sniffer) [0m
+[31m618      988    systemd-oomd         ALTA            CAP_DAC_OVERRIDE(leer_todo) [0m
+[31m624      992    systemd-resolve      ALTA            CAP_NET_RAW(sniffer) [0m
+[33m663      997    systemd-timesyn      MODERADA        2000000 (bits encendidos)[0m
+[33m825      101    dbus-daemon          MODERADA        20000000 (bits encendidos)[0m
+[33m1370     121    cups-browsed         MODERADA        400 (bits encendidos)[0m
+[31m1436     110    rtkit-daemon         ALTA            CAP_SYS_PTRACE(inyectar) [0m
+[33m1877     1000   systemd              MODERADA        800000000 (bits encendidos)[0m
+[31m2587     1000   fusermount3          ALTA            CAP_NET_RAW(sniffer) CAP_SYS_ADMIN(escape) CAP_SYS_PTRACE(inyectar) CAP_SYS_MODULE(rootkit) CAP_DAC_OVERRIDE(leer_todo) [0m
+[31m3454     1000   sudo                 ALTA            CAP_NET_RAW(sniffer) CAP_SYS_ADMIN(escape) CAP_SYS_PTRACE(inyectar) CAP_SYS_MODULE(rootkit) CAP_DAC_OVERRIDE(leer_todo) [0m
+[31m3456     1000   sudo                 ALTA            CAP_NET_RAW(sniffer) CAP_SYS_ADMIN(escape) CAP_SYS_PTRACE(inyectar) CAP_SYS_MODULE(rootkit) CAP_DAC_OVERRIDE(leer_todo) [0m
+[31m
+    [!] Advertencia: Se han detectado 11 procesos con capacidades críticas.[0m
+--------------------------------------------------------------------------------------------------

@@ -1,0 +1,20 @@
+
+--- [[32mAnálisis de Integridad y Metadatos (MACB)[0m] ---
+[+] Analizando: /tmp/escenario_timestomp/update_daemon.sh
+    -> Tamaño: 51 bytes
+    -> Inodo:  432117
+    -> UID/GID: 1000 / 1000
+
+    [Sellos de Tiempo Forense (MACB)]
+    -> Modificación (M): 2024-01-15 03:00:00
+    -> Acceso (A):       2024-01-15 03:00:00
+    -> Cambio Inodo (C): 2026-05-15 06:36:46
+    -> Nacimiento (B):   2026-05-15 06:36:46
+[31m    [!] ALERTA CRÍTICA: Timestomping detectado (Modificación anterior a Creación).[0m
+[31m    [!] ALERTA: Timestomping posible (Nanosegundos borrados).[0m
+
+    [Firma Digital]
+    -> 99c8a77d41c7ec09552da9fac619f0673cd47620a571bb41f87936453b1874c8  /tmp/escenario_timestomp/update_daemon.sh
+------------------------------------------------------------
+
+

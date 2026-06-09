@@ -1,0 +1,16 @@
+
+--- [[32mAnálisis de Integridad y Metadatos (MACB)[0m] ---
+[+] Analizando: /tmp/escenario_timestomp/documento_normal.txt
+    -> Tamaño: 17 bytes
+    -> Inodo:  432129
+    -> UID/GID: 1000 / 1000
+
+    [Sellos de Tiempo Forense (MACB)]
+    -> Modificación (M): 2026-05-15 06:36:46
+    -> Acceso (A):       2026-05-15 06:36:46
+    -> Cambio Inodo (C): 2026-05-15 06:36:46
+    -> Nacimiento (B):   2026-05-15 06:36:46
+
+    [Firma Digital]
+    -> fbb70e4d2d6843df320ff06969b5bb57ad80a619cc92c54d9764ce8a65748971  /tmp/escenario_timestomp/documento_normal.txt
+------------------------------------------------------------

@@ -1,0 +1,39 @@
+
+--- [[32mAnálisis de Memoria RAM (Procesos)[0m] ---
+[33m    [*] Sospecha baja: Proceso 'unattended-upgr' (PID: 1296) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 778958cdc000-778958cdd000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-session-b' (PID: 1940) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 72f1c7861000-72f1c7871000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-session-b' (PID: 2026) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7b174dee0000-7b174def0000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-shell' (PID: 2060) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7fc233e00000-7fc234800000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gjs' (PID: 2162) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 70626b721000-70626b722000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gjs' (PID: 2671) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7bbfc8ba9000-7bbfc8baa000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'xdg-desktop-por' (PID: 2699) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7588d1400000-7588d1e00000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gjs' (PID: 4033) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 717226955000-717226956000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'WebExtensions' (PID: 4227) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 2a545f032000-2a545f042000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Privileged Cont' (PID: 4283) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 33db928db000-33db928eb000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Isolated Web Co' (PID: 4467) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 21be0db8d000-21be0db9d000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Web Content' (PID: 4853) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 3a26e4317000-3a26e4327000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Web Content' (PID: 4856) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 72b208ba000-72b208da000 rwxp 00000000 00:00 0                            [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'Web Content' (PID: 4862) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 2affbec29000-2affbec39000 rwxp 00000000 00:00 0                          [anon:js-executable-memory]
+[33m    [*] Sospecha baja: Proceso 'nautilus' (PID: 5688) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 7189b4c00000-7189b5600000 rwxp 00000000 00:00 0 
+[33m    [*] Sospecha baja: Proceso 'gnome-terminal-' (PID: 5715) tiene región RWX (posible JIT legítimo, revisar).[0m
+        Detalle: 782b68117000-782b68127000 rwxp 00000000 00:00 0 
+[+] Se han analizado 213 procesos en busca de anomalías en memoria.
+    -> 0 con severidad CRÍTICA (RWX + binario borrado)
+    -> 16 con sospecha baja (RWX aislado, posible JIT)
+[32m    [+] No se detectaron combinaciones críticas en memoria.[0m
+------------------------------------------------------------

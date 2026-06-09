@@ -1,0 +1,7 @@
+
+--- [[32mAnálisis de Privilegios: Linux Capabilities[0m] ---
+PID      UID    Nombre               Peligrosidad    Capacidades Críticas Detectadas
+--------------------------------------------------------------------------------------------------
+[32m
+    [+] No se detectaron procesos de usuario con capacidades críticas.[0m
+--------------------------------------------------------------------------------------------------

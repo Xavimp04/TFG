@@ -1,0 +1,22 @@
+
+--- [[32mAnálisis de Memoria RAM (Procesos)[0m] ---
+[31m    [!] ALERTA: Proceso 'unattended-upgr' (PID: 1296) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 778958cdc000-778958cdd000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gnome-session-b' (PID: 1940) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 72f1c7861000-72f1c7871000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gnome-session-b' (PID: 2026) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 7b174dee0000-7b174def0000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gnome-shell' (PID: 2060) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 7fc233e00000-7fc234800000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gjs' (PID: 2162) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 70626b721000-70626b722000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gjs' (PID: 2671) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 7bbfc8ba9000-7bbfc8baa000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gjs' (PID: 2775) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 772332941000-772332942000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'gnome-terminal-' (PID: 3328) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 7d45750c3000-7d45750f3000 rwxp 00000000 00:00 0 
+[31m    [!] ALERTA: Proceso 'nautilus' (PID: 3360) tiene región de memoria RWX (Sospechoso de Inyección/Shellcode).[0m
+        Detalle: 70b2b6600000-70b2b7000000 rwxp 00000000 00:00 0 
+[+] Se han analizado 202 procesos en busca de anomalías en memoria.
+------------------------------------------------------------

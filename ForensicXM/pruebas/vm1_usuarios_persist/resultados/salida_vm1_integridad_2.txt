@@ -1,0 +1,18 @@
+
+--- [[32mAnálisis de Integridad y Metadatos (MACB)[0m] ---
+[+] Analizando: /tmp/escenario_timestomp/.hidden_payload
+    -> Tamaño: 13 bytes
+    -> Inodo:  432118
+    -> UID/GID: 1000 / 1000
+
+    [Sellos de Tiempo Forense (MACB)]
+    -> Modificación (M): 2023-06-01 12:00:00
+    -> Acceso (A):       2023-06-01 12:00:00
+    -> Cambio Inodo (C): 2026-05-15 06:36:46
+    -> Nacimiento (B):   2026-05-15 06:36:46
+[31m    [!] ALERTA CRÍTICA: Timestomping detectado (Modificación anterior a Creación).[0m
+[31m    [!] ALERTA: Timestomping posible (Nanosegundos borrados).[0m
+
+    [Firma Digital]
+    -> 65df5ea47c47fe2e1534835d36a1a98386bed25b197943ac80bf80aa9c41019a  /tmp/escenario_timestomp/.hidden_payload
+------------------------------------------------------------
