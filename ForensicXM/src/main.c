@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
         {"bin", no_argument, 0, 'b'},
         {"net", no_argument, 0, 'n'},
         {"mem", no_argument, 0, 'm'},
-        {"mem", no_argument, 0, 'm'},
         {"caps", no_argument, 0, 'c'},
         {"root", no_argument, 0, 'k'},
         {"json", no_argument, 0, 'j'},

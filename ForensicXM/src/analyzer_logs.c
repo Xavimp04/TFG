@@ -29,7 +29,7 @@ void analizar_logs(ForensicContext *ctx) {
     }
 
     while (fgets(linea, sizeof(linea), fp)) {
-        // Buscar intentos fallidos de contraseña [cite: 238, 257]
+        // Buscar intentos fallidos de contraseña
         if (strstr(linea, "Failed password") || strstr(linea, "authentication failure")) {
             if (fallos < 10) { // Solo mostramos los primeros 10 para no inundar la terminal
                 printf(RED "    [!] Intento fallido:" RESET " %s", linea);

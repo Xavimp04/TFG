@@ -17,7 +17,7 @@
  * @brief Estructura de Contexto que encapsula el estado global de ejecución.
  */
 typedef struct {
-    char root_dir[1024];
+    char root_dir[PATH_MAX];
     int modo_deadbox;
     int modo_json;
     cJSON *json_report;

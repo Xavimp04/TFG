@@ -12,7 +12,7 @@ ForensicXM soporta dos metodologías clave de análisis forense:
 ### Módulos Analíticos Destacados:
 - **Detección de Rootkits LKM:** Algoritmo de *Cross-View Validation* para comparar las tablas formales de `/proc/modules` frente a la infraestructura interna del kernel en `/sys/module`.
 - **Análisis de Privilegios (Linux Capabilities):** Detección heurística de técnicas Post-Explotación, escaneando procesos sin permisos de root que secuestran capacidades críticas como `CAP_SYS_ADMIN`, `CAP_NET_RAW` o `CAP_SYS_PTRACE`.
-- **Mapeo de Sockets de Red en Memoria:** Algoritmo en `O(1)` tras carga precargada de *inodes* del kernel para mapear los propietarios PID de las conexiones TCP/UDP.
+- **Mapeo de Sockets de Red en Memoria:** Búsqueda lineal sobre tabla precargada de *inodes* del kernel para mapear los propietarios PID de las conexiones TCP/UDP, evitando el coste cuadrático del recorrido reactivo.
 - **Timelining MACB Completo:** Integración de la llamada de bajo nivel `SYS_statx` (kernel 4.11+) para extraer en sistemas ext4/btrfs la escurridiza fecha de "*Nacimiento/Creación* (Birth Time/crtime)", alertando automáticamente sobre indicios de *Timestomping*.
 - **Integridad Segura:** Uso de arquitecturas POSIX nativas y APIs criptográficas modernas (OpenSSL EVP) evitando llamadas vulnerables vía `system()`.
 
@@ -62,7 +62,7 @@ Puedes utilizar una o varias opciones simultáneamente para realizar múltiples 
 
 **Ejemplo 1: Exportación técnica para Integración SIEM (JSON)**
 ```bash
-sudo ./bin/forensicXM -n -c -k -j
+sudo ./bin/forensicXM -j -n -c -k 
 ```
 
 **Ejemplo 2: Análisis completo al vuelo (Live Forensics)**
