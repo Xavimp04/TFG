@@ -1,0 +1,45 @@
+
+--- [[32mAnálisis de Privilegios: Linux Capabilities[0m] ---
+
+--- [[32mAnálisis Avanzado: Detección de Rootkits LKM[0m] ---
+{
+	"tool":	"ForensicXM",
+	"network_connections":	[{
+			"protocol":	"TCP",
+			"local_address":	"0.0.0.0:22",
+			"remote_address":	"0.0.0.0:0",
+			"state":	"LISTEN",
+			"inode":	8544,
+			"pid":	1,
+			"process_name":	"systemd"
+		}, {
+			"protocol":	"TCP",
+			"local_address":	"127.0.0.1:631",
+			"remote_address":	"0.0.0.0:0",
+			"state":	"LISTEN",
+			"inode":	10979,
+			"pid":	1349,
+			"process_name":	"cupsd"
+		}, {
+			"protocol":	"TCP",
+			"local_address":	"127.0.0.54:53",
+			"remote_address":	"0.0.0.0:0",
+			"state":	"LISTEN",
+			"inode":	7126,
+			"pid":	574,
+			"process_name":	"systemd-resolve"
+		}, {
+			"protocol":	"TCP",
+			"local_address":	"127.0.0.53:53",
+			"remote_address":	"0.0.0.0:0",
+			"state":	"LISTEN",
+			"inode":	7124,
+			"pid":	574,
+			"process_name":	"systemd-resolve"
+		}],
+	"capabilities":	[],
+	"rootkits":	[{
+			"hidden_module":	"ocultador",
+			"severity":	"CRITICAL"
+		}]
+}
